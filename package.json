@@ -1,5 +1,5 @@
 {
-  "name": "create-react-app-redux",
+  "name": "awari-tv",
   "version": "0.1.0",
   "private": true,
   "devDependencies": {
@@ -14,7 +14,9 @@
     "react-router-redux": "next",
     "redux": "^3.7.2",
     "redux-thunk": "^2.2.0",
-    "sanitize.css": "^5.0.0"
+    "request-promise": "^4.2.2",
+    "sanitize.css": "^5.0.0",
+    "moment": "^2.18.1"
   },
   "scripts": {
     "start": "react-scripts start",
