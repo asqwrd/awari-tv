@@ -1,0 +1,26 @@
+.show-card-container{
+  .show-card{
+    max-width: 250px;
+    width: 25%;
+    height: 350px;
+    position: relative;
+    &:before {
+      content: '';
+      padding-top: 100%;
+      display: block;
+    }
+    >div{
+      height: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      >div{
+        height:100%;
+        img{
+          object-fit: cover;
+        }
+      }
+    }
+  }
+}

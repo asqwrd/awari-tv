@@ -2,9 +2,15 @@ const request = require('request-promise');
 const express = require('express');
 const moment = require('moment');
 const app = express();
-
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT,DELETE");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization, Cache-Control");
+  next();
+});
 
 app.get('/', (req, res) => res.send('Welcome'));
+
 
 app.get('/api/search/shows', (req, res) => {
     request({
@@ -47,15 +53,27 @@ app.get('/api/schedule', (req, res) => {
       uri: 'http://api.tvmaze.com/schedule?country=US',
     }).then((response)=>{
       response = JSON.parse(response);
-      const group_shows = response.reduce((acc,curr,index)=>{
-        if(acc[curr.airtime]){
-          acc[curr.airtime] = [...acc[curr.airtime],curr];
-        }else{
-          acc[curr.airtime]=[curr];
-        }
-        return acc;
-      },{});
-      res.send(group_shows);
+      const morning = response.filter((item,index)=>{
+        let hour = moment(`${item.airdate}T${item.airtime}`).hour();
+        return hour >=4 && hour < 12;
+      });
+
+      const midday = response.filter((item,index)=>{
+        let hour = moment(`${item.airdate}T${item.airtime}`).hour();
+        return hour >= 12 && hour < 17;
+      });
+
+      const evening = response.filter((item,index)=>{
+        let hour = moment(`${item.airdate}T${item.airtime}`).hour();
+        return hour >= 18 && hour < 22;
+      });
+
+      const latenight = response.filter((item,index)=>{
+        let hour = moment(`${item.airdate}T${item.airtime}`).hour();
+        return hour >= 22 || (hour  >= 0 && hour < 4);
+      });
+
+      res.send({morning,midday,evening,latenight});
 
     })
 });

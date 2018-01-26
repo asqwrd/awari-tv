@@ -1,48 +1,62 @@
 import React from 'react'
 import { push } from 'react-router-redux'
 import { bindActionCreators } from 'redux'
-import { connect } from 'react-redux'
-import {
-  increment,
-  incrementAsync,
-  decrement,
-  decrementAsync
-} from '../../modules/counter'
+import {connectWithLifecycle} from 'react-lifecycle-component/lib'
+import {getSchedule, setTimeOfDay} from './modules/home'
+import moment from 'moment'
+import ShowCard from '../../components/show-card'
 
-const Home = props => (
-  <div>
-    <h1>Home</h1>
-    <p>Count: {props.count}</p>
 
-    <p>
-      <button onClick={props.increment} disabled={props.isIncrementing}>Increment</button>
-      <button onClick={props.incrementAsync} disabled={props.isIncrementing}>Increment Async</button>
-    </p>
+const Home = props => {
+  const {schedule,time_of_day} = props;
+  const {morning, latenight, midday, evening} = schedule;
+  this.setTimeOfDay = props.setTimeOfDay;
+  const shows = schedule[time_of_day];
 
-    <p>
-      <button onClick={props.decrement} disabled={props.isDecrementing}>Decrement</button>
-      <button onClick={props.decrementAsync} disabled={props.isDecrementing}>Decrement Async</button>
-    </p>
+  return (
+    <div className="home-container">
+      {
+        shows ? shows.map((show)=>{
+          return <ShowCard show={show.show} key={show.id}/>
+        }):''
+      }
 
-    <p><button onClick={() => props.changePage()}>Go to about page via redux</button></p>
-  </div>
-)
+    </div>
+  )
+}
+
+const firstLoad = ()=>{
+  const hour = moment().hour();
+  switch (true){
+    case hour >=4 && hour < 12:
+      this.setTimeOfDay('morning');
+      break;
+    case hour >= 12 && hour < 17:
+      this.setTimeOfDay('midday');
+      break;
+    case hour >= 18 && hour < 22:
+      this.setTimeOfDay('evening');
+      break;
+    case hour >= 22 || (hour  >= 0 && hour < 4):
+      this.setTimeOfDay('latenight');
+
+  }
+}
 
 const mapStateToProps = state => ({
-  count: state.counter.count,
-  isIncrementing: state.counter.isIncrementing,
-  isDecrementing: state.counter.isDecrementing
+  schedule: state.home.schedule,
+  time_of_day:state.home.time_of_day,
 })
 
-const mapDispatchToProps = dispatch => bindActionCreators({
-  increment,
-  incrementAsync,
-  decrement,
-  decrementAsync,
-  changePage: () => push('/about-us')
-}, dispatch)
+const mapDispatchToProps = dispatch => ({
+  componentDidMount:() => firstLoad(),
+  ...bindActionCreators({
+  componentWillMount:getSchedule,
+  getSchedule,
+  setTimeOfDay,
+}, dispatch)})
 
-export default connect(
+export default connectWithLifecycle(
   mapStateToProps,
   mapDispatchToProps
 )(Home)

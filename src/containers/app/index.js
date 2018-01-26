@@ -1,20 +1,51 @@
 import React from 'react';
-import { Route, Link } from 'react-router-dom'
+import { Route, NavLink } from 'react-router-dom'
+import { bindActionCreators } from 'redux'
+import { connect } from 'react-redux'
+import { withRouter } from 'react-router'
 import Home from '../home'
-import About from '../about'
+import './app.css'
+import {
+  grey100, grey300, grey500,
+  white, darkBlack, fullBlack,} from 'material-ui/styles/colors';
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import getMuiTheme from 'material-ui/styles/getMuiTheme';
+
+const muiTheme = getMuiTheme({
+  palette: {
+    primary1Color: fullBlack,
+    primary2Color: fullBlack,
+    primary3Color: fullBlack,
+    accent1Color: '#582335',
+    accent2Color: fullBlack,
+    accent3Color: grey500,
+    textColor: darkBlack,
+    alternateTextColor: white,
+  },
+
+});
+
 
 const App = () => (
-  <div>
-    <header>
-      <Link to="/">Home</Link>
-      <Link to="/about-us">About</Link>
-    </header>
+  <MuiThemeProvider muiTheme={muiTheme}>
+    <div className="app">
+      <header className="header-container">
+      </header>
 
-    <main>
-      <Route exact path="/" component={Home} />
-      <Route exact path="/about-us" component={About} />
-    </main>
-  </div>
+      <main className="main-content">
+        <Route exact path="/" component={Home} />
+      </main>
+    </div>
+  </MuiThemeProvider>
 )
 
-export default App
+const mapStateToProps = (state, ownProps) => ({
+})
+
+const mapDispatchToProps = dispatch => bindActionCreators({
+}, dispatch)
+
+export default withRouter(connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(App))
