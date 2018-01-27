@@ -5,21 +5,27 @@ import {connectWithLifecycle} from 'react-lifecycle-component/lib'
 import {getSchedule, setTimeOfDay} from './modules/home'
 import moment from 'moment'
 import ShowCard from '../../components/show-card'
+import './home.css'
 
 
 const Home = props => {
   const {schedule,time_of_day} = props;
   const {morning, latenight, midday, evening} = schedule;
   this.setTimeOfDay = props.setTimeOfDay;
-  const shows = schedule[time_of_day];
+  const shows = schedule[time_of_day] ? schedule[time_of_day]:[];
 
   return (
     <div className="home-container">
-      {
-        shows ? shows.map((show)=>{
-          return <ShowCard show={show.show} key={show.id}/>
-        }):''
-      }
+      <header className="home-header">
+        <h1 className="date">{moment().format('MMMM Do, YYYY')}</h1>
+      </header>
+      <div className="home-content">
+        {
+          shows.map((show)=>{
+            return <ShowCard show={show.show} key={show.id}/>
+          })
+        }
+      </div>
 
     </div>
   )

@@ -1,0 +1,19 @@
+.home-container{
+  overflow: hidden;
+  height: 100%;
+  .home-header{
+    text-align: center;
+    .date{
+
+    }
+  }
+  .home-content{
+    display:grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px,1fr));
+    grid-auto-rows: 350px;
+    grid-gap:20px;
+    overflow: auto;
+    height: calc(100% - 90px);
+    padding: 0 50px 50px;
+  }
+}
