@@ -14,6 +14,11 @@ html,body, body > div{
     text-decoration: none;
   }
 
+  .app-body{
+    height:100%;
+    overflow: auto;
+  }
+
   table, caption, tbody, tfoot, thead, tr, th, td{
     vertical-align:middle;
   }
@@ -21,53 +26,66 @@ html,body, body > div{
   input,input:focus,input:active{
     outline:none;
   }
-  .header-container{
-    display: flex;
+
+  .dynamic-background{
+    background-color: #fafafa;
+    position: static;
     width:100%;
-    height: 80px;
-    padding:0 50px 0 90px;
-    align-items: center;
-    .header-logo{
-      margin:0 auto 0 0;
-      .logo-item{
-        color:#000;
-        font-weight: 500;
-        font-size:18px;
-        &.eric{
-          margin-right:10px;
-        }
-        &.maya{
-          margin-left:10px;
-        }
-        &.active{
-          color:#000;
-          font-weight: 500;
-        }
+    top:0;
+    left:0;
+    height: 40%;
+    z-index: -1;
+    will-change: transform;
+    opacity: 1;
+    //@include transition(opacity ease .2s);
+    &.opacity{
+      opacity: 0;
+    }
+    .background-color{
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      background-color: transparent;
+
+    }
+
+    .background-images{
+      position: absolute;
+      width: 100%;
+      height: 100%;
+
+    }
+
+    .background-gradient{
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: transparent;
+    }
+
+    .background-image{
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background-size: cover;
+      background-position: center;
+      opacity: 0;
+      //@include transition(opacity 0.5s ease);
+      &.show{
+        opacity:1;
       }
     }
 
-    .header-nav-container{
-      display: flex;
-      .header-nav-item{
-        border-bottom:3px solid transparent;
-        margin:10px;
-        font-weight: 300;
-        color:#888;
-        padding: 10px 5px;
-        margin: 0 10px;
-        -webkit-transition:all ease .5s;
-        transition:all ease .5s;
-        &.active{
-          color:#000;
-          font-weight: 500;
-          border-color:#000;
-        }
-      }
+    .background-image-container{
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+      width: 60vw;
+      pointer-events: none;
     }
-  }
 
-  .main-content{
-    height:calc(100% - 80px);
   }
-
 }

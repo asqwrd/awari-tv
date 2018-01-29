@@ -10,6 +10,7 @@ import {
   white, darkBlack, fullBlack,} from 'material-ui/styles/colors';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
+import {getBackGroundColor, setBackGroundImage} from './modules/app'
 
 const muiTheme = getMuiTheme({
   palette: {
@@ -26,23 +27,45 @@ const muiTheme = getMuiTheme({
 });
 
 
-const App = () => (
+const App = (props) =>{
+  const {backgroundColor,backgroundImage,gradient} = props;
+  console.log(backgroundColor,backgroundImage);
+  return (
   <MuiThemeProvider muiTheme={muiTheme}>
     <div className="app">
-      <header className="header-container">
-      </header>
+      <header className="app-header"></header>
+      <div className="app-body">
+        <div className="dynamic-background">
+          <div className="background-color" style={{backgroundColor}}></div>
 
-      <main className="main-content">
-        <Route exact path="/" component={Home} />
-      </main>
+          <div className="background-image-container">
+            <div className="background-images">
+              <div className="background-image show" style={{backgroundImage:`url(${backgroundImage})`}}></div>
+            </div>
+            <div className="background-gradient" style={{background:`linear-gradient(to top,${backgroundColor},${gradient}),linear-gradient(to right, ${backgroundColor},${gradient})`}}></div>
+          </div>
+        </div>
+  
+        <main className="main-content" style={{backgroundColor}}>
+          <Route exact path="/" component={Home} />
+        </main>
+      </div>
     </div>
   </MuiThemeProvider>
-)
+  )
+}
 
 const mapStateToProps = (state, ownProps) => ({
+  backgroundColor:state.app.backgroundColor,
+  backgroundImage:state.app.backgroundImage,
+  gradient:state.app.gradient,
+
 })
 
+
 const mapDispatchToProps = dispatch => bindActionCreators({
+  getBackGroundColor,
+  setBackGroundImage,
 }, dispatch)
 
 export default withRouter(connect(

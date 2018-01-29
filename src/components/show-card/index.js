@@ -8,7 +8,6 @@ import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'mat
 
 const ShowCard = props => {
   const {show} = props
-  console.log(show);
   return (
     <div className="show-card-container">
       <Card className="show-card">
