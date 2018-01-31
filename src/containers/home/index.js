@@ -16,11 +16,27 @@ const Home = props => {
   this.getBackGroundColor = props.getBackGroundColor;
   this.setBackGroundImage = props.setBackGroundImage;
   const shows = schedule[time_of_day] ? schedule[time_of_day]:[];
+  this.show = shows[0] && shows[0].show ? shows[0].show:null;
+  if(this.show){
+    this.getBackGroundColor(this.show.image.original);
+    this.setBackGroundImage(this.show.image.original);
+  }
+
 
   return (
     <div className="home-container">
       <header className="home-header">
         <h1 className="date">{moment().format('MMMM Do, YYYY')}</h1>
+        <nav className="time-of-day-nav">
+          <div className={`time-of-day ${time_of_day === 'morning' ? 'active':''}`} onClick={()=>props.setTimeOfDay('morning')}>Morning</div>
+          <div className={`time-of-day ${time_of_day === 'midday' ? 'active':''}`} onClick={()=>props.setTimeOfDay('midday')}>Mid-Day</div>
+          <div className={`time-of-day ${time_of_day === 'evening' ? 'active':''}`} onClick={()=>props.setTimeOfDay('evening')}>Evening</div>
+          <div className={`time-of-day ${time_of_day === 'latenight' ? 'active':''}`} onClick={()=>props.setTimeOfDay('latenight')}>Late night</div>
+        </nav>
+        <p className="day">{moment().format('dddd')}</p>
+
+        <span className="nav-button prev"><button>Previous</button> <span>{moment().subtract('1','days').format('MMM Do, YYYY')}</span></span>
+        <span className="nav-button next"><span>{moment().add('1','days').format('MMM Do, YYYY')}</span><button>Next</button></span>
       </header>
       <div className="home-content">
         {
@@ -50,8 +66,6 @@ const firstLoad = ()=>{
       this.setTimeOfDay('latenight');
 
   }
-  this.getBackGroundColor('http://static.tvmaze.com/uploads/images/original_untouched/13/34679.jpg');
-  this.setBackGroundImage('http://static.tvmaze.com/uploads/images/original_untouched/13/34679.jpg');
 
 }
 

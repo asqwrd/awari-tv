@@ -11,6 +11,7 @@ import {
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import {getBackGroundColor, setBackGroundImage} from './modules/app'
+import logoLight from './images/logo-light.svg'
 
 const muiTheme = getMuiTheme({
   palette: {
@@ -33,7 +34,9 @@ const App = (props) =>{
   return (
   <MuiThemeProvider muiTheme={muiTheme}>
     <div className="app">
-      <header className="app-header"></header>
+    <header className="app-header">
+      <img className="logo" src={logoLight}/>
+    </header>
       <div className="app-body">
         <div className="dynamic-background">
           <div className="background-color" style={{backgroundColor}}></div>
@@ -45,7 +48,7 @@ const App = (props) =>{
             <div className="background-gradient" style={{background:`linear-gradient(to top,${backgroundColor},${gradient}),linear-gradient(to right, ${backgroundColor},${gradient})`}}></div>
           </div>
         </div>
-  
+
         <main className="main-content" style={{backgroundColor}}>
           <Route exact path="/" component={Home} />
         </main>

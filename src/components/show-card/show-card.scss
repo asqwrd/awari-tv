@@ -22,5 +22,19 @@
         }
       }
     }
+    div{
+      >span{
+        font-size: 18px !important;
+        line-height: 1;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        width:100%;
+
+        ~span{
+          font-size: 14px !important;
+        }
+      }
+    }
   }
 }
