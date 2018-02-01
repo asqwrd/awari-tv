@@ -50,30 +50,26 @@ app.get('/api/favorites/:id', (req, res) => {
 app.get('/api/schedule', (req, res) => {
     request({
       method: 'GET',
-      uri: 'http://api.tvmaze.com/schedule?country=US',
+      uri: `http://api.tvmaze.com/schedule?country=US&${req.query.date}`,
     }).then((response)=>{
       response = JSON.parse(response);
-      const morning = response.filter((item,index)=>{
-        let hour = moment(`${item.airdate}T${item.airtime}`).hour();
-        return hour >=4 && hour < 12;
-      });
+      let shows = response;
+      if(req.query.filter){
+         shows = response.filter((res)=>{
+          return res.airtime == req.query.filter
+        })
+      }
+      let times = [];
+      response.forEach((show)=>{
+        let moment_time = moment(`${show.airdate}T${show.airtime}`).format('hh:mma');
+        let isExist = times.some((item)=>item.value == show.airtime);
+        if(!isExist){
+          times.push({value:show.airtime,formatted:moment_time});
+        }
 
-      const midday = response.filter((item,index)=>{
-        let hour = moment(`${item.airdate}T${item.airtime}`).hour();
-        return hour >= 12 && hour < 17;
-      });
+      })
 
-      const evening = response.filter((item,index)=>{
-        let hour = moment(`${item.airdate}T${item.airtime}`).hour();
-        return hour >= 18 && hour < 22;
-      });
-
-      const latenight = response.filter((item,index)=>{
-        let hour = moment(`${item.airdate}T${item.airtime}`).hour();
-        return hour >= 22 || (hour  >= 0 && hour < 4);
-      });
-
-      res.send({morning,midday,evening,latenight});
+      res.send({shows,times});
 
     })
 });

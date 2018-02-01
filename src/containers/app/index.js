@@ -34,10 +34,10 @@ const App = (props) =>{
   return (
   <MuiThemeProvider muiTheme={muiTheme}>
     <div className="app">
-    <header className="app-header">
-      <img className="logo" src={logoLight}/>
-    </header>
       <div className="app-body">
+        <header className="app-header">
+          <img className="logo" src={logoLight}/>
+        </header>
         <div className="dynamic-background">
           <div className="background-color" style={{backgroundColor}}></div>
 

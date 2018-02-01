@@ -3,16 +3,19 @@ import PropTypes from 'prop-types';
 import {connectWithLifecycle} from 'react-lifecycle-component/lib'
 import './show-card.css';
 import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'material-ui/Card';
+import NO_IMAGE from '../../containers/app/images/no-image.png';
+
 
 
 
 const ShowCard = props => {
-  const {show} = props
+  const {show} = props;
+  const {image, name, network} = show;
   return (
     <div className="show-card-container">
       <Card className="show-card">
         <CardMedia
-          overlay={<CardTitle title={show.name} subtitle={show.network.name} />}
+          overlay={<CardTitle title={name} subtitle={network ? network.name: 'No network'} />}
           mediaStyle={
             {
               height: "100%",
@@ -33,7 +36,7 @@ const ShowCard = props => {
             }
           }
         >
-          <img src={show.image.original} alt="" />
+          <img src={image ? image.original:NO_IMAGE} alt="" />
         </CardMedia>
       </Card>
     </div>

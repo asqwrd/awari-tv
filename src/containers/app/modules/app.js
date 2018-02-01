@@ -55,3 +55,15 @@ export const setBackGroundImage = (image) =>{
     })
   }
 }
+
+export const changefontcolor = (rgb:Array<any>)=>{
+      let c = 'rgb(' + rgb[0] + ',' + rgb[1] + ',' + rgb[2] + ')';
+      let o = Math.round(((parseInt(rgb[0]) * 299) + (parseInt(rgb[1]) * 587) + (parseInt(rgb[2]) * 114)) / 1000);
+      const html = document.querySelector('html');
+      if(o > 125){
+
+        html.style.setProperty('--accent-color','#333');
+      }else{
+        html.style.setProperty('--accent-color','#fff');
+      }
+}
