@@ -16,7 +16,6 @@ const initialState = {
 export default (state = initialState, action) => {
   switch (action.type) {
     case GET_BACKGROUND_COLOR:
-      console.log(action);
       const backgroundColor = `rgb(${action.color[0]},${action.color[1]},${action.color[2]})`
       const gradient = `rgba(${action.color[0]},${action.color[1]},${action.color[2]},0)`
       return {
@@ -26,7 +25,6 @@ export default (state = initialState, action) => {
       }
 
     case SET_BACKGROUND_IMAGE:
-      console.log(action);
       return {
         ...state,
         backgroundImage: action.image

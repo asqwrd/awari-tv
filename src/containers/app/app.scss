@@ -8,6 +8,7 @@ html,body, body > div{
 
 :root {
     --accent-color: #fff;
+    --header-background:transparent;
 }
 
 
@@ -26,11 +27,11 @@ html,body, body > div{
     position: absolute;
     width: 100%;
     z-index: 2;
-    height: 50px;
+    height: 80px;
     display: flex;
     align-items: center;
-    padding: 0 20px;
-    background-color: transparent;
+    padding: 0 100px;
+    background-color: var(--header-background);
     .logo{
       max-height: 100%;
       width:120px;

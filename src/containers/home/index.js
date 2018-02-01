@@ -14,6 +14,14 @@ import EVENING from '../app/images/evening.jpg';
 import LATENIGHT from '../app/images/latenight.jpg';
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
+import ContentFilter from 'material-ui/svg-icons/content/filter-list';
+import IconButton from 'material-ui/IconButton';
+import IconMenu from 'material-ui/IconMenu';
+import FontIcon from 'material-ui/FontIcon';
+import RaisedButton from 'material-ui/RaisedButton';
+
+
+
 
 
 const Home = props => {
@@ -36,32 +44,31 @@ const Home = props => {
   const time = times.filter(time=>time.value == filter);
   const filterText = time[0] ? time[0].formatted:'All shows';
 
-  this.handleChange = (event, index, value)=>{
-    props.setFilter(value);
+  this.handleChange = (event, value)=>{
     props.getSchedule(value);
+    props.setFilter(value);
   }
-  console.log(filter);
 
   return (
     <div className="home-container">
       <header className="home-header">
         <h1 className="date">{moment().format('MMMM Do, YYYY')}</h1>
+        <p className="day">{moment().format('dddd')}</p>
         <div className="filters">
-          <SelectField
-           floatingLabelText=""
-           value={filter}
-           labelStyle={{color:`var(--accent-color)`, textAlign:'left'}}
-           onChange={this.handleChange}
-           >
+          <IconMenu
+            iconButtonElement={<RaisedButton className="filter-icon" buttonStyle={{backgroundColor:'transparent', color:'var(--accent-color)'}} labelStyle={{color:'var(--accent-color)'}}label="Airtimes" icon={<FontIcon className="material-icons" >filter_list</FontIcon>}></RaisedButton>}
+            onChange={this.handleChange}
+            value={filter}
+            maxHeight={300}
+          >
              <MenuItem value='' primaryText="All shows" />
              {
                times.map((time)=>{
                  return <MenuItem value={time.value} primaryText={time.formatted} key={time.value} />
                })
              }
-           </SelectField>
+           </IconMenu>
         </div>
-        <p className="day">{moment().format('dddd')}</p>
         <span className="nav-button prev"><button>Previous</button> <span>{moment().subtract('1','days').format('MMM Do, YYYY')}</span></span>
         <span className="nav-button next"><span>{moment().add('1','days').format('MMM Do, YYYY')}</span><button>Next</button></span>
       </header>
@@ -69,7 +76,7 @@ const Home = props => {
       <div className="home-content">
         {
           shows.map((show)=>{
-            return <ShowCard show={show.show} key={show.id}/>
+            return <div onClick={()=>props.changPage(show.id)} key={show.id}><ShowCard show={show.show} /></div>
           })
         }
       </div>
@@ -79,12 +86,11 @@ const Home = props => {
 }
 
 const setColors = ()=>{
-  console.log(this.show);
   if(this.show){
     this.show.image = this.show.image ? this.show.image: {original:this.day_bg}
     this.getBackGroundColor(this.show.image.original);
     this.setBackGroundImage(this.show.image.original);
-    //changefontcolor(backgroundColor);
+    changefontcolor(this.backgroundColor);
   }
 }
 
@@ -124,6 +130,7 @@ const mapDispatchToProps = dispatch => ({
   getBackGroundColor,
   setBackGroundImage,
   setFilter,
+  changPage:(id)=> push(`/shows/${id}`),
 }, dispatch)})
 
 export default connectWithLifecycle(
