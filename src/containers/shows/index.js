@@ -11,6 +11,14 @@ import MIDDAY from '../app/images/midday.jpg';
 import MORNING from '../app/images/morning.jpg';
 import EVENING from '../app/images/evening.jpg';
 import LATENIGHT from '../app/images/latenight.jpg';
+import {
+  Table,
+  TableBody,
+  TableHeader,
+  TableHeaderColumn,
+  TableRow,
+  TableRowColumn,
+} from 'material-ui/Table';
 
 
 const Shows = (props) => {
@@ -22,7 +30,7 @@ const Shows = (props) => {
   this.setBackGroundImage = props.setBackGroundImage;
   this.backgroundColor = backgroundColor;
 
-  const {_embedded} = show;
+  const {_embedded, seasons } = show;
   if(time_of_day == 'morning'){
     this.day_bg = MORNING;
   }else if(time_of_day == 'midday'){
@@ -33,8 +41,10 @@ const Shows = (props) => {
     this.day_bg = LATENIGHT;
   }
 
+  this.active_season = seasons && seasons[0] && seasons[0].episodes ? seasons[0].episodes:[];
+  console.log(this.active_season);
   return (
-    _embedded ? <div className="show-container">
+    _embedded && this.active_season ? <div className="show-container">
       <header className="show-header">
         <h1 className="show-name">{show.name}</h1>
         <p className="show-next-eps">{`Next episode: ${_embedded.nextepisode.name} | ${moment(_embedded.nextepisode.airstamp).format('MMMM Do, YYYY')}`}</p>
@@ -42,6 +52,33 @@ const Shows = (props) => {
           Season {_embedded.nextepisode.season}
         </div>
       </header>
+      <div className="show-content">
+        <Table fixedHeader={true} wrapperStyle={{height:'100%'}} bodyStyle={{height:'calc(100% - 57px)'}}>
+           <TableHeader
+              displaySelectAll={false}
+              adjustForCheckbox={false}
+           >
+           <TableRow>
+             <TableHeaderColumn style={{width:'100px'}}>#</TableHeaderColumn>
+             <TableHeaderColumn>Episodes</TableHeaderColumn>
+             <TableHeaderColumn style={{textAlign: 'center'}}>Date</TableHeaderColumn>
+           </TableRow>
+         </TableHeader>
+         <TableBody displayRowCheckbox={false}>
+            {
+              this.active_season.map((eps)=>{
+                return (
+                  <TableRow key={eps.id}>
+                    <TableRowColumn style={{width:'100px'}}>{eps.number}</TableRowColumn>
+                    <TableRowColumn>{eps.name}</TableRowColumn>
+                    <TableRowColumn style={{textAlign: 'center'}}>{moment(eps.airstamp).format('MMMM Do, YYYY')}</TableRowColumn>
+                  </TableRow>
+                )
+              })
+            }
+          </TableBody>
+        </Table>
+      </div>
     </div> : ''
   )
 

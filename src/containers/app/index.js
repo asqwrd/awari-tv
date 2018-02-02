@@ -39,7 +39,7 @@ const App = (props) =>{
   return (
   <MuiThemeProvider muiTheme={muiTheme}>
     <div className="app">
-      <div className="app-body" ref={(elm)=>this.appBody = elm}>
+      <div className="app-body" ref={(elm)=>this.appBody = elm} style={{backgroundColor}}>
         <header className="app-header"  ref={(elm)=>this.appHeader = elm}>
           <img className="logo" src={logoLight}/>
         </header>
@@ -54,7 +54,7 @@ const App = (props) =>{
           </div>
         </div>
 
-        <main className="main-content" style={{backgroundColor}}   ref={(elm)=>this.mainContent = elm}>
+        <main className={`main-content ${props.location.pathname.split('/')[1] == "shows" ? "show":""}`}   ref={(elm)=>this.mainContent = elm} >
           <Route exact path="/" component={Home} />
           <Route exact path="/shows/:id" component={Shows} />
         </main>

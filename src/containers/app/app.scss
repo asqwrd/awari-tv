@@ -20,7 +20,10 @@ html,body, body > div{
 
   .main-content{
     position: relative;
-    min-height: calc(100% - 326px);
+    min-height: 65%;
+    &.show{
+      height: 65%;
+    }
   }
   a{
     text-decoration: none;

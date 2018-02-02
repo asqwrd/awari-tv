@@ -1,5 +1,10 @@
 .show-container{
-  margin:0;
+  margin: -100px 0 0;
+  height: calc(100% + 70px);
+  .show-content{
+    padding:0 100px;
+    height: calc(100% - 185px);
+  }
   .show-header{
     text-align: center;
     padding:30px 100px;
