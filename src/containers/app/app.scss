@@ -17,8 +17,10 @@ html,body, body > div{
   height: 100%;
   width: 100%;
   position: relative;
+
   .main-content{
     position: relative;
+    min-height: calc(100% - 326px);
   }
   a{
     text-decoration: none;

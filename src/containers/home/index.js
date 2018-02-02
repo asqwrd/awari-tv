@@ -2,8 +2,8 @@ import React from 'react'
 import { push } from 'react-router-redux'
 import { bindActionCreators } from 'redux'
 import {connectWithLifecycle} from 'react-lifecycle-component/lib'
-import {getSchedule, setTimeOfDay, setFilter} from './modules/home'
-import {getBackGroundColor, setBackGroundImage, changefontcolor} from '../app/modules/app'
+import {getSchedule, setFilter, setDate} from './modules/home'
+import {getBackGroundColor, setBackGroundImage, changefontcolor, setTimeOfDay} from '../app/modules/app'
 import moment from 'moment'
 import ShowCard from '../../components/show-card'
 import './home.css'
@@ -19,6 +19,7 @@ import IconButton from 'material-ui/IconButton';
 import IconMenu from 'material-ui/IconMenu';
 import FontIcon from 'material-ui/FontIcon';
 import RaisedButton from 'material-ui/RaisedButton';
+import DatePicker from 'material-ui/DatePicker';
 
 
 
@@ -45,14 +46,36 @@ const Home = props => {
   const filterText = time[0] ? time[0].formatted:'All shows';
 
   this.handleChange = (event, value)=>{
-    props.getSchedule(value);
+    const date_str = moment(date).format('YYYY-MM-DD');
+    props.getSchedule(value,date_str);
     props.setFilter(value);
   }
+  this.handleDateChange = (event, date)=>{
+    const date_str = moment(date).format('YYYY-MM-DD');
+    props.getSchedule(filter,date_str);
+    props.setDate(date);
+  }
+  const prevDate = moment(date).subtract('1','days').toDate();
+  const nextDate = moment(date).add('1','days').toDate();
+  console.log(prevDate);
+
 
   return (
     <div className="home-container">
       <header className="home-header">
-        <h1 className="date">{moment().format('MMMM Do, YYYY')}</h1>
+        <span className="date">
+          <DatePicker
+            container="inline"
+            mode="landscape"
+            autoOk={true}
+            name="date-picker"
+            onChange={this.handleDateChange}
+            value={date}
+            textFieldStyle={{color:'var(--accent-color)', fontSize:'36px', fontWeight:'400', width:'auto', height:'70px'}}
+            style={{color:'var(--accent-color)', fontSize:'36px', fontWeight:'400'}}
+            formatDate={(date)=>moment(date).format('MMMM Do, YYYY')}
+            />
+        </span>
         <p className="day">{moment().format('dddd')}</p>
         <div className="filters">
           <IconMenu
@@ -69,14 +92,14 @@ const Home = props => {
              }
            </IconMenu>
         </div>
-        <span className="nav-button prev"><button>Previous</button> <span>{moment().subtract('1','days').format('MMM Do, YYYY')}</span></span>
-        <span className="nav-button next"><span>{moment().add('1','days').format('MMM Do, YYYY')}</span><button>Next</button></span>
+        <span className="nav-button prev" onClick={()=>this.handleDateChange(null,prevDate)}><button>Previous</button> <span>{moment(date).subtract('1','days').format('MMM Do, YYYY')}</span></span>
+        <span className="nav-button next" onClick={()=>this.handleDateChange(null,nextDate)}><span>{moment(date).add('1','days').format('MMM Do, YYYY')}</span><button>Next</button></span>
       </header>
       <h2 className="filter-text">{filterText}</h2>
       <div className="home-content">
         {
           shows.map((show)=>{
-            return <div onClick={()=>props.changPage(show.id)} key={show.id}><ShowCard show={show.show} /></div>
+            return <div onClick={()=>props.changPage(show.show.id)} key={show.id}><ShowCard show={show.show} /></div>
           })
         }
       </div>
@@ -94,27 +117,10 @@ const setColors = ()=>{
   }
 }
 
-const firstLoad = ()=>{
-  const hour = moment().hour();
-  switch (true){
-    case hour >=4 && hour < 12:
-      this.setTimeOfDay('morning');
-      break;
-    case hour >= 12 && hour < 17:
-      this.setTimeOfDay('midday');
-      break;
-    case hour >= 18 && hour < 22:
-      this.setTimeOfDay('evening');
-      break;
-    case hour >= 22 || (hour  >= 0 && hour < 4):
-      this.setTimeOfDay('latenight');
-  }
-}
-
 const mapStateToProps = state => ({
   times: state.home.times,
   shows: state.home.shows,
-  time_of_day:state.home.time_of_day,
+  time_of_day:state.app.time_of_day,
   backgroundColor:state.app.backgroundColor,
   filter: state.home.filter,
   date: state.home.date,
@@ -122,7 +128,6 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   componentDidUpdate:()=>setColors(),
-  componentDidMount:() => firstLoad(),
   ...bindActionCreators({
   componentWillMount:getSchedule,
   getSchedule,
@@ -130,6 +135,7 @@ const mapDispatchToProps = dispatch => ({
   getBackGroundColor,
   setBackGroundImage,
   setFilter,
+  setDate,
   changPage:(id)=> push(`/shows/${id}`),
 }, dispatch)})
 

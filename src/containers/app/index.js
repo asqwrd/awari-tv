@@ -12,8 +12,10 @@ import {
   white, darkBlack, fullBlack,} from 'material-ui/styles/colors';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
-import {getBackGroundColor, setBackGroundImage} from './modules/app'
+import {getBackGroundColor, setBackGroundImage, setTimeOfDay} from './modules/app'
 import logoLight from './images/logo-light.svg'
+import moment from 'moment'
+
 
 const muiTheme = getMuiTheme({
   palette: {
@@ -33,6 +35,7 @@ const muiTheme = getMuiTheme({
 const App = (props) =>{
   const {backgroundColor,backgroundImage,gradient} = props;
   this.backgroundColor = backgroundColor;
+  this.setTimeOfDay = props.setTimeOfDay;
   return (
   <MuiThemeProvider muiTheme={muiTheme}>
     <div className="app">
@@ -65,11 +68,12 @@ const mapStateToProps = (state, ownProps) => ({
   backgroundColor:state.app.backgroundColor,
   backgroundImage:state.app.backgroundImage,
   gradient:state.app.gradient,
+  time_of_day: state.app.time_of_day,
 
 })
 
+
 const attachEvents = ()=>{
-  console.log(this.appBody);
   this.appHeader.style.width = `${this.mainContent.getBoundingClientRect().width}px`;
   const html = document.querySelector('html');
   this.appBody.addEventListener('scroll',(e)=>{
@@ -80,6 +84,21 @@ const attachEvents = ()=>{
       html.style.setProperty('--header-background', 'transparent');
     }
   })
+
+  const hour = moment().hour();
+  switch (true){
+    case hour >=4 && hour < 12:
+      this.setTimeOfDay('morning');
+      break;
+    case hour >= 12 && hour < 17:
+      this.setTimeOfDay('midday');
+      break;
+    case hour >= 18 && hour < 22:
+      this.setTimeOfDay('evening');
+      break;
+    case hour >= 22 || (hour  >= 0 && hour < 4):
+      this.setTimeOfDay('latenight');
+  }
 }
 
 
@@ -88,6 +107,7 @@ const mapDispatchToProps = dispatch => ({
   ...bindActionCreators({
     getBackGroundColor,
     setBackGroundImage,
+    setTimeOfDay,
 }, dispatch)})
 
 export default withRouter(connectWithLifecycle(

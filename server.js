@@ -26,6 +26,7 @@ app.get('/api/search/shows', (req, res) => {
 });
 
 app.get('/api/shows/:id', (req, res) => {
+    console.log(req.params)
     request({
       method: 'GET',
       uri: `http://api.tvmaze.com/shows/${req.params.id}?embed[]=nextepisode&embed[]=episodes&embed[]=seasons`,
@@ -48,9 +49,10 @@ app.get('/api/favorites/:id', (req, res) => {
 });
 
 app.get('/api/schedule', (req, res) => {
+  console.log(req.query.date);
     request({
       method: 'GET',
-      uri: `http://api.tvmaze.com/schedule?country=US&${req.query.date}`,
+      uri: `http://api.tvmaze.com/schedule?country=US&date=${req.query.date}`,
     }).then((response)=>{
       response = JSON.parse(response);
       let shows = response;

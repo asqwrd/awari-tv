@@ -4,6 +4,8 @@ const color_thief = new ColorThief();
 
 export const GET_BACKGROUND_COLOR = 'GET_BACKGROUND_COLOR'
 export const SET_BACKGROUND_IMAGE = 'SET_BACKGROUND_IMAGE'
+export const SET_TIME = 'SET_TIME'
+
 
 
 const SCHEDULE_API = `//${window.location.hostname}:3002/api/schedule`;
@@ -11,6 +13,8 @@ const SCHEDULE_API = `//${window.location.hostname}:3002/api/schedule`;
 const initialState = {
   backgroundColor: '',
   backgroundImage:'',
+  time_of_day:'morning',
+
 }
 
 export default (state = initialState, action) => {
@@ -29,6 +33,13 @@ export default (state = initialState, action) => {
         ...state,
         backgroundImage: action.image
       }
+
+    case SET_TIME:
+      return {
+        ...state,
+        time_of_day: action.time
+      }
+
     default:
       return state
   }
@@ -37,6 +48,7 @@ export default (state = initialState, action) => {
 export const getBackGroundColor = (image) => {
   return dispatch => {
     color_thief.getColorAsync(image,(color,element)=>{
+      changefontcolor(color);
       return dispatch({
         type: GET_BACKGROUND_COLOR,
         color
@@ -64,4 +76,13 @@ export const changefontcolor = (rgb:Array<any>)=>{
       }else{
         html.style.setProperty('--accent-color','#fff');
       }
+}
+
+export const setTimeOfDay = (time) =>{
+  return dispatch =>{
+     dispatch({
+      type: SET_TIME,
+      time,
+    })
+  }
 }
