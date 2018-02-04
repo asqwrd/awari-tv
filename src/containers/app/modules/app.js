@@ -2,24 +2,34 @@ import ColorThief from '@mariotacke/color-thief';
 
 const color_thief = new ColorThief();
 
-export const GET_BACKGROUND_COLOR = 'GET_BACKGROUND_COLOR'
+export const SET_BACKGROUND_COLOR = 'SET_BACKGROUND_COLOR'
 export const SET_BACKGROUND_IMAGE = 'SET_BACKGROUND_IMAGE'
 export const SET_TIME = 'SET_TIME'
+export const SET_BODY = 'SET_BODY'
+export const GET_SEARCH = 'GET_SEARCH'
+export const LOADING_API = 'LOADING_API'
+export const CLEAR_SEARCH_TEXT = 'CLEAR_SEARCH_TEXT'
+export const UPDATE_SEARCH_TEXT = 'UPDATE_SEARCH_TEXT'
 
 
 
 const SCHEDULE_API = `//${window.location.hostname}:3002/api/schedule`;
+const SEARCH_API = `//${window.location.hostname}:3002/api/search/shows`;
 
 const initialState = {
-  backgroundColor: '',
+  backgroundColor: [255,255,255],
   backgroundImage:'',
   time_of_day:'morning',
+  body:{},
+  loading:false,
+  searchtext:'',
+  searchResults:[],
 
 }
 
 export default (state = initialState, action) => {
   switch (action.type) {
-    case GET_BACKGROUND_COLOR:
+    case SET_BACKGROUND_COLOR:
       const backgroundColor = `rgb(${action.color[0]},${action.color[1]},${action.color[2]})`
       const gradient = `rgba(${action.color[0]},${action.color[1]},${action.color[2]},0)`
       return {
@@ -40,19 +50,45 @@ export default (state = initialState, action) => {
         time_of_day: action.time
       }
 
+    case CLEAR_SEARCH_TEXT:
+      return {
+        ...state,
+        searchtext: ''
+      }
+
+    case UPDATE_SEARCH_TEXT:
+      return {
+        ...state,
+        searchtext: action.searchText,
+      }
+
+      case LOADING_API:
+        return {
+          ...state,
+          loading: action.loading,
+        }
+
+      case SET_BODY:
+        return {
+          ...state,
+          body: action.body
+        }
+
+      case GET_SEARCH:
+        return {
+          ...state,
+          searchResults: action.searchResults
+        }
     default:
       return state
   }
 }
 
-export const getBackGroundColor = (image) => {
-  return dispatch => {
-    color_thief.getColorAsync(image,(color,element)=>{
-      changefontcolor(color);
-      return dispatch({
-        type: GET_BACKGROUND_COLOR,
-        color
-      })
+export const setBackGroundColor = (color) => {
+  return dispatch =>{
+     dispatch({
+      type: SET_BACKGROUND_COLOR,
+      color
     })
   }
 }
@@ -84,5 +120,54 @@ export const setTimeOfDay = (time) =>{
       type: SET_TIME,
       time,
     })
+  }
+}
+
+export const setBody = (body)=>{
+  return dispatch =>{
+     dispatch({
+      type: SET_BODY,
+      body,
+    })
+  }
+}
+
+export const setLoader = (loading)=>{
+  return dispatch =>{
+     dispatch({
+      type: LOADING_API,
+      loading,
+    })
+  }
+}
+
+export const clearSearchText = ()=>{
+  return dispatch =>{
+     dispatch({
+      type: CLEAR_SEARCH_TEXT,
+    })
+  }
+}
+
+export const updateSearchText = (searchText)=>{
+  return dispatch =>{
+     dispatch({
+      type: UPDATE_SEARCH_TEXT,
+      searchText,
+    })
+  }
+}
+
+export const getSearch = (searchText='') => {
+  return dispatch =>{
+    fetch(`${SEARCH_API}?q=${searchText}`)
+      .then(response => response.json())
+      .then(res =>{
+        const searchResults = res;
+        return dispatch({
+          type: GET_SEARCH,
+          searchResults,
+        })
+      });
   }
 }

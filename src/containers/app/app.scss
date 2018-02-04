@@ -9,6 +9,10 @@ html,body, body > div{
 :root {
     --accent-color: #fff;
     --header-background:transparent;
+    --sub-header-pos:0;
+    --header-width:100%;
+    --content-margin-top:0;
+    --sub-header-position:static;
 }
 
 
@@ -21,9 +25,6 @@ html,body, body > div{
   .main-content{
     position: relative;
     min-height: 65%;
-    &.show{
-      height: 65%;
-    }
   }
   a{
     text-decoration: none;

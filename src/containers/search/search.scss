@@ -1,4 +1,4 @@
-.home-container{
+.search-container{
   overflow: hidden;
   height: 100%;
   display: flex;
@@ -42,7 +42,7 @@
     font-weight: 400;
     border-bottom:2px solid var(--accent-color);
   }
-  .home-header{
+  .search-header{
     text-align: center;
     padding:30px 125px;
     position: relative;
@@ -85,9 +85,7 @@
       font-weight: 400;
       margin:0;
       display: inline-block;
-      input{
-        color:var(--accent-color) !important;
-      }
+      font-size: 36px;
     }
     .day{
       font-size: 15px;
@@ -114,7 +112,7 @@
     background-color: transparent !important;
     box-shadow: none !important;
   }
-  .home-content{
+  .search-content{
     display:grid;
     grid-template-columns: repeat(auto-fill, minmax(200px,1fr));
     grid-auto-rows: 350px;

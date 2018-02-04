@@ -19,6 +19,7 @@
     "node-console": "^0.3.36",
     "node-sass": "^4.7.2",
     "node-sass-chokidar": "^0.0.3",
+    "node-vibrant": "^3.0.0",
     "npm-run-all": "^4.1.2",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
@@ -31,7 +32,8 @@
     "redux": "^3.7.2",
     "redux-thunk": "^2.2.0",
     "request-promise": "^4.2.2",
-    "sanitize.css": "^5.0.0"
+    "sanitize.css": "^5.0.0",
+    "withinviewport": "^2.0.0"
   },
   "scripts": {
     "build-css": "node-sass-chokidar src/ -o src/",
