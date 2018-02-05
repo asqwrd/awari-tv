@@ -1,5 +1,3 @@
-import moment from 'moment'
-import {setLoader} from '../../app/modules/app'
 
 export const GET_SEARCH_PAGE = 'GET_SEARCH_PAGE'
 export const LOADING_API = 'LOADING_API'

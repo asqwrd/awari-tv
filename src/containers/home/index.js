@@ -7,15 +7,11 @@ import {setBackGroundColor, setBackGroundImage, changefontcolor, setTimeOfDay,ch
 import moment from 'moment'
 import ShowCard from '../../components/show-card'
 import './home.css'
-import TV_IMAGE from '../app/images/tv_logo.svg';
 import MIDDAY from '../app/images/midday.jpg';
 import MORNING from '../app/images/morning.jpg';
 import EVENING from '../app/images/evening.jpg';
 import LATENIGHT from '../app/images/latenight.jpg';
-import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
-import ContentFilter from 'material-ui/svg-icons/content/filter-list';
-import IconButton from 'material-ui/IconButton';
 import IconMenu from 'material-ui/IconMenu';
 import FontIcon from 'material-ui/FontIcon';
 import RaisedButton from 'material-ui/RaisedButton';
@@ -24,7 +20,6 @@ import FloatingActionButton from 'material-ui/FloatingActionButton';
 import withinview from 'withinviewport/withinviewport'
 import RefreshIndicator from 'material-ui/RefreshIndicator';
 import {List, ListItem} from 'material-ui/List';
-import Subheader from 'material-ui/Subheader';
 import Paper from 'material-ui/Paper';
 
 
@@ -46,17 +41,17 @@ const Home = props => {
   this.user = user;
   this.filter = filter;
 
-  if(time_of_day == 'morning'){
+  if(time_of_day === 'morning'){
     this.day_bg = MORNING;
-  }else if(time_of_day == 'midday'){
+  }else if(time_of_day === 'midday'){
     this.day_bg = MIDDAY;
-  }else if(time_of_day == 'evening'){
+  }else if(time_of_day === 'evening'){
     this.day_bg = EVENING;
-  }else if(time_of_day == 'latenight'){
+  }else if(time_of_day === 'latenight'){
     this.day_bg = LATENIGHT;
   }
 
-  const time = times.filter(time=>time.value == filter);
+  const time = times.filter(time=>time.value === filter);
   const filterText = time[0] ? time[0].formatted:'All shows';
 
   this.handleChange = (event,value)=>{
@@ -77,7 +72,6 @@ const Home = props => {
     if(favorites.length > 0){
       top = -70;
     }
-    console.log(top);
     if((this.homeHeader && this.scrollBody) && !withinview(this.homeHeader,{container:this.scrollBody, top:top})){
       this.floatingNav.classList.add('show');
     }else if(this.floatingNav){
@@ -227,7 +221,6 @@ const mapStateToProps = state => ({
   body: state.app.body,
   loading: state.home.loading,
   user:state.app.user,
-  time_of_day:state.app.time_of_day,
 })
 
 const mapDispatchToProps = dispatch => ({

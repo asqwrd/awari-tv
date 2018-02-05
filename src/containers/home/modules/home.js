@@ -1,6 +1,5 @@
 import moment from 'moment'
-import {setLoader} from '../../app/modules/app'
-import firebase, { auth, provider } from '../../../firebase.js';
+import { auth } from '../../../firebase.js';
 
 
 export const GET_SCHEDULE = 'GET_SCHEDULE'
@@ -87,7 +86,6 @@ export const getSchedule = (filter='',date=moment().format('YYYY-MM-DD')) => {
 
 export const setFilter = (filter)=>{
   return dispatch =>{
-    dispatch(setLoader(true));
     dispatch({
       type: SET_FILTER,
       filter
@@ -97,7 +95,6 @@ export const setFilter = (filter)=>{
 
 export const setDate = (date)=>{
   return dispatch =>{
-    dispatch(setLoader(true));
     dispatch({
       type: SET_DATE,
       date

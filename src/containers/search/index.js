@@ -4,24 +4,12 @@ import { bindActionCreators } from 'redux'
 import {connectWithLifecycle} from 'react-lifecycle-component/lib'
 import {getSearch} from './modules/search'
 import {setBackGroundColor, setBackGroundImage, changefontcolor, setTimeOfDay} from '../app/modules/app'
-import moment from 'moment'
 import ShowCard from '../../components/show-card'
 import './search.css'
-import TV_IMAGE from '../app/images/tv_logo.svg';
 import MIDDAY from '../app/images/midday.jpg';
 import MORNING from '../app/images/morning.jpg';
 import EVENING from '../app/images/evening.jpg';
 import LATENIGHT from '../app/images/latenight.jpg';
-import SelectField from 'material-ui/SelectField';
-import MenuItem from 'material-ui/MenuItem';
-import ContentFilter from 'material-ui/svg-icons/content/filter-list';
-import IconButton from 'material-ui/IconButton';
-import IconMenu from 'material-ui/IconMenu';
-import FontIcon from 'material-ui/FontIcon';
-import RaisedButton from 'material-ui/RaisedButton';
-import DatePicker from 'material-ui/DatePicker';
-import FloatingActionButton from 'material-ui/FloatingActionButton';
-import withinview from 'withinviewport/withinviewport'
 import RefreshIndicator from 'material-ui/RefreshIndicator';
 
 
@@ -33,11 +21,19 @@ const Search = props => {
   this.setTimeOfDay = props.setTimeOfDay;
   this.show = shows[0] ? shows[0]:null;
   this.time_of_day = time_of_day;
-  console.log(props);
   this.search = props.match.params.query;
   this.scrollBody = body;
 
   this.scrollBody = body;
+  if(time_of_day === 'morning'){
+    this.day_bg = MORNING;
+  }else if(time_of_day === 'midday'){
+    this.day_bg = MIDDAY;
+  }else if(time_of_day === 'evening'){
+    this.day_bg = EVENING;
+  }else if(time_of_day === 'latenight'){
+    this.day_bg = LATENIGHT;
+  }
 
 
   return (
@@ -71,16 +67,14 @@ const Search = props => {
 const setColors = ()=>{
   if(this.show && this.backgroundColor){
     this.setTimeOfDay(this.time_of_day);
-    this.show.image = this.show.image ? this.show.image: {original:this.day_bg}
-    this.image = this.show.image.original;
     this.setBackGroundColor(this.backgroundColor);
-    this.setBackGroundImage(this.show.image.original);
+    this.setBackGroundImage(this.show.image && this.show.image.original ? this.show.image.original:this.day_bg);
     changefontcolor('--accent-color',this.backgroundColor);
   }
 }
 
 const reloadPage = (prevprops,nextprops)=>{
-  if(prevprops.match.params.query != this.search){
+  if(prevprops.match.params.query !== this.search){
     prevprops.getSearch(prevprops.match.params.query)
   }
 }

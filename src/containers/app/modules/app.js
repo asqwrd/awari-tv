@@ -1,4 +1,4 @@
-import firebase, { auth, provider } from '../../../firebase.js';
+import { auth, provider } from '../../../firebase.js';
 
 
 export const SET_BACKGROUND_COLOR = 'SET_BACKGROUND_COLOR'
@@ -15,7 +15,6 @@ export const TOGGLE_POPOVER = 'TOGGLE_POPOVER'
 
 
 
-const SCHEDULE_API = `//${window.location.hostname}:3002/api/schedule`;
 const SEARCH_API = `//${window.location.hostname}:3002/api/search/shows`;
 const AUTH_API = `//${window.location.hostname}:3002/api/auth`;
 
@@ -128,8 +127,7 @@ export const setBackGroundImage = (image) =>{
 }
 
 export const changefontcolor = (cssVar, rgb:Array<any>)=>{
-      let c = 'rgb(' + rgb[0] + ',' + rgb[1] + ',' + rgb[2] + ')';
-      let o = Math.round(((parseInt(rgb[0]) * 299) + (parseInt(rgb[1]) * 587) + (parseInt(rgb[2]) * 114)) / 1000);
+      let o = Math.round(((parseInt(rgb[0],10) * 299) + (parseInt(rgb[1],10) * 587) + (parseInt(rgb[2],10) * 114)) / 1000);
       const html = document.querySelector('html');
       if(o > 125){
         html.style.setProperty(cssVar,'#333');

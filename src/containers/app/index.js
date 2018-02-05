@@ -1,7 +1,6 @@
 import React from 'react';
 import { Route, NavLink } from 'react-router-dom'
 import { bindActionCreators } from 'redux'
-import { connect } from 'react-redux'
 import { push } from 'react-router-redux'
 import {connectWithLifecycle} from 'react-lifecycle-component/lib'
 import { withRouter } from 'react-router'
@@ -10,8 +9,7 @@ import Shows from '../shows'
 import Search from '../search'
 import './app.css'
 import {
-  grey100, grey300, grey500,
-  white, darkBlack, fullBlack,} from 'material-ui/styles/colors';
+  white, darkBlack,} from 'material-ui/styles/colors';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import {setBackGroundColor,
@@ -27,10 +25,7 @@ import {setBackGroundColor,
   togglePopover,
 } from './modules/app'
 import logoLight from './images/logo-light.svg'
-import moment from 'moment'
-import RefreshIndicator from 'material-ui/RefreshIndicator';
 import AutoComplete from 'material-ui/AutoComplete';
-import RaisedButton from 'material-ui/RaisedButton';
 import Popover from 'material-ui/Popover';
 import Menu from 'material-ui/Menu';
 import MenuItem from 'material-ui/MenuItem';
@@ -57,7 +52,7 @@ const muiTheme = getMuiTheme({
 
 
 const App = (props) =>{
-  const {backgroundColor,backgroundImage,gradient, loading, searchtext, user} = props;
+  const {backgroundColor,backgroundImage,gradient, user} = props;
   this.backgroundColor = backgroundColor;
   this.setTimeOfDay = props.setTimeOfDay;
   this.setScrollPosition = props.setScrollPosition;
@@ -92,7 +87,7 @@ const App = (props) =>{
     <div className="app">
       <div className="app-body" ref={(elm)=>{this.appBody = elm; props.setBody(this.appBody)}} style={{backgroundColor}}>
         <header className="app-header"  ref={(elm)=>this.appHeader = elm}>
-          <div className="logo-container"><NavLink to='/'><img className="logo" src={logoLight}/></NavLink></div>
+          <div className="logo-container"><NavLink to='/'><img className="logo" src={logoLight} alt="logo"/></NavLink></div>
           <div className="search">
             <AutoComplete
               hintText="Search"
@@ -141,7 +136,7 @@ const App = (props) =>{
           </div>
         </div>
 
-        <main className={`main-content ${props.location.pathname.split('/')[1] == "shows" ? "show":""}`}   ref={(elm)=>this.mainContent = elm} >
+        <main className="main-content"   ref={(elm)=>this.mainContent = elm} >
           <Route exact path="/" component={Home} />
           <Route exact path="/shows/:id" component={Shows} />
           <Route exact path="/search/:query" component={Search} />
@@ -157,7 +152,6 @@ const mapStateToProps = (state, ownProps) => ({
   backgroundImage:state.app.backgroundImage,
   gradient:state.app.gradient,
   time_of_day: state.app.time_of_day,
-  loading: state.app.loading,
   searchResults:state.app.searchResults,
   searchtext:state.app.searchtext,
   user:state.app.user,
@@ -181,21 +175,6 @@ const attachEvents = ()=>{
       this.html.style.setProperty('--header-background', 'transparent');
     }
   })
-
-  const hour = moment().hour();
-  /*switch (true){
-    case hour >=4 && hour < 12:
-      this.setTimeOfDay('morning');
-      break;
-    case hour >= 12 && hour < 17:
-      this.setTimeOfDay('midday');
-      break;
-    case hour >= 18 && hour < 22:
-      this.setTimeOfDay('evening');
-      break;
-    case hour >= 22 || (hour  >= 0 && hour < 4):
-      this.setTimeOfDay('latenight');
-  }*/
   this.onAuthStateChanged();
 }
 

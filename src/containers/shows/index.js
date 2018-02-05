@@ -6,7 +6,6 @@ import {getShow, getSeason} from './modules/shows'
 import {setBackGroundColor, setBackGroundImage, changefontcolor,changeColorVar} from '../app/modules/app'
 import moment from 'moment'
 import './shows.css'
-import TV_IMAGE from '../app/images/tv_logo.svg';
 import MIDDAY from '../app/images/midday.jpg';
 import MORNING from '../app/images/morning.jpg';
 import EVENING from '../app/images/evening.jpg';
@@ -47,18 +46,17 @@ const Shows = (props) => {
       this.floatingNav.classList.remove('show');
     }
   }
-  console.log(backgroundColor2);
   if(this.seasonNav && this.scrollBody)
   this.scrollBody.addEventListener('scroll', this.handleScroll,true)
 
-  const {_embedded, seasons } = show;
-  if(time_of_day == 'morning'){
+  const {_embedded } = show;
+  if(time_of_day === 'morning'){
     this.day_bg = MORNING;
-  }else if(time_of_day == 'midday'){
+  }else if(time_of_day === 'midday'){
     this.day_bg = MIDDAY;
-  }else if(time_of_day == 'evening'){
+  }else if(time_of_day === 'evening'){
     this.day_bg = EVENING;
-  }else if(time_of_day == 'latenight'){
+  }else if(time_of_day === 'latenight'){
     this.day_bg = LATENIGHT;
   }
 
@@ -82,7 +80,7 @@ const Shows = (props) => {
           <h1 className="season-label">Seasons</h1>
           {
             show.seasons.map((season, index)=>{
-              return <div onClick={()=>props.getSeason(season)} className={`season-number ${active_season.number == season.number ? 'active':''}`} key={season.id}>{season.number}</div>
+              return <div onClick={()=>props.getSeason(season)} className={`season-number ${active_season.number === season.number ? 'active':''}`} key={season.id}>{season.number}</div>
             })
 
           }
@@ -95,7 +93,7 @@ const Shows = (props) => {
 
           {
             show.seasons.map((season, index)=>{
-              return <ListItem style={{textAlign:'center'}} onClick={()=>{props.getSeason(season); this.scrollBody.scrollTo(0,0)}} className={`season-number ${active_season.number == season.number ? 'active':''}`} key={season.id}>{season.number}</ListItem>
+              return <ListItem style={{textAlign:'center'}} onClick={()=>{props.getSeason(season); this.scrollBody.scrollTo(0,0)}} className={`season-number ${active_season.number === season.number ? 'active':''}`} key={season.id}>{season.number}</ListItem>
             })
 
           }
@@ -106,7 +104,7 @@ const Shows = (props) => {
       <div className="show-content">
         <Paper style={{height:"100%", width:'100%', maxWidth:"1200px", backgroundColor:'var(--muted-color)',minHeight:'200px', display:'flex',alignItems:'center'}}>
           {
-            episodes.length == 0 ? <h1 className="no-eps">No episodes</h1>:
+            episodes.length === 0 ? <h1 className="no-eps">No episodes</h1>:
             <Table fixedHeader={true}   style={{backgroundColor:'var(--muted-color)', color:'#fff'}}>
                <TableHeader
                   displaySelectAll={false}
@@ -152,10 +150,6 @@ const setColors = ()=>{
     changeColorVar('--muted-color',this.backgroundColor2);
   }
 
-}
-
-const firstLoad = ()=>{
-  this.image = undefined;
 }
 
 const reloadPage = (nextprops)=>{

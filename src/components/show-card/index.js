@@ -1,8 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types';
-import {connectWithLifecycle} from 'react-lifecycle-component/lib'
 import './show-card.css';
-import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'material-ui/Card';
+import {Card, CardMedia, CardTitle} from 'material-ui/Card';
 import NO_IMAGE from '../../containers/app/images/no-image.png';
 
 
