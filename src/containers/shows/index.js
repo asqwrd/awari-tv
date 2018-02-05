@@ -93,7 +93,7 @@ const Shows = (props) => {
 
           {
             show.seasons.map((season, index)=>{
-              return <ListItem style={{textAlign:'center'}} onClick={()=>{props.getSeason(season); this.scrollBody.scrollTo(0,0)}} className={`season-number ${active_season.number === season.number ? 'active':''}`} key={season.id}>{season.number}</ListItem>
+              return <ListItem style={{textAlign:'center', color:'var(--muted-font-color)'}} onClick={()=>{props.getSeason(season); this.scrollBody.scrollTo(0,0)}} className={`season-number ${active_season.number === season.number ? 'active':''}`} key={season.id}>{season.number}</ListItem>
             })
 
           }

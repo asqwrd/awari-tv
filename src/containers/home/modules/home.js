@@ -27,7 +27,7 @@ export default (state = initialState, action) => {
       return {
         ...state,
         shows: action.shows,
-        favorites: action.favorites,
+        favorites: action.favorites || [],
         times:action.times,
         color:action.color,
         muted_color:action.muted_color,
