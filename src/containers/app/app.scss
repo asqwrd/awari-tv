@@ -13,6 +13,12 @@ html,body, body > div{
     --header-width:100%;
     --content-margin-top:0;
     --sub-header-position:static;
+    --muted-color:'#fff';
+    --muted-font-color:'#fff';
+}
+
+.hide{
+  pointer-events: none;
 }
 
 
@@ -36,11 +42,24 @@ html,body, body > div{
     height: 80px;
     display: flex;
     align-items: center;
+    justify-content: space-between;
     padding: 0 100px;
     background-color: var(--header-background);
     .logo{
       max-height: 100%;
       width:120px;
+    }
+
+    .search{
+      background-color: rgba(255,255,255,.5);
+      hr{
+        display: none;
+      }
+      border-radius: 3px;
+      padding:0 10px;
+      width: 40%;
+      max-width: 500px;
+      min-width: 200px;
     }
   }
 

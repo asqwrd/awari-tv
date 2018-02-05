@@ -1,11 +1,20 @@
 const request = require('request-promise');
 const express = require('express');
 const moment = require('moment');
-const  ColorThief = require('@mariotacke/color-thief');
 const Vibrant = require('node-vibrant')
+const firebase = require('firebase');
+const admin = require('firebase-admin');
 
+const serviceAccount = require("./serviceAccount.json");
 
-const color_thief = new ColorThief();
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+  databaseURL: "https://awaritv-2b373.firebaseio.com"
+});
+
+const db = admin.database().ref();
+const favorites = db.child('favorites');
+
 
 
 const app = express();
@@ -17,6 +26,12 @@ app.use(function(req, res, next) {
 });
 
 app.get('/', (req, res) => res.send('Welcome'));
+app.get('/api/auth', (req,res)=>{
+  admin.auth().verifyIdToken(req.query.token).then((decode)=>{
+    console.log('auth')
+    res.send('Success')
+  })
+})
 
 
 app.get('/api/search/shows', (req, res) => {
@@ -89,12 +104,32 @@ app.get('/api/shows/:id', (req, res) => {
         })
         season.episodes = episodes;
       })
+      const hour = moment().hour();
+      let time_of_day = 'morning';
+      let time_of_day_image = 'images/morning.jpg';
+      switch (true){
+        case hour >=4 && hour < 12:
+          time_of_day = 'morning';
+          time_of_day_image = 'images/morning.jpg'
+          break;
+        case hour >= 12 && hour < 17:
+          time_of_day = 'midday';
+          time_of_day_image = 'images/midday.jpg'
+          break;
+        case hour >= 18 && hour < 22:
+          time_of_day = 'evening';
+          time_of_day_image = 'images/evening.jpg'
+          break;
+        case hour >= 22 || (hour  >= 0 && hour < 4):
+          time_of_day = 'latenight';
+          time_of_day_image = 'images/latenight.jpg'
+      }
+      const image = show && show.image ? show.image.original:time_of_day_image;
       const showProm = new Promise((resolve,reject)=>{
           resolve(show);
       })
-      return Promise.all([showProm, Vibrant.from(show.image.original).getPalette()])
+      return Promise.all([showProm, Vibrant.from(image).getPalette()])
     }).then((responses)=>{
-        console.log(responses)
         const show = responses[0];
         const color = responses[1];
         res.send({show,color})
@@ -150,11 +185,31 @@ app.get('/api/schedule', (req, res) => {
         resolve({shows,times,time_of_day});
       })
       const image = shows[0] && shows[0].show.image ? shows[0].show.image.original:time_of_day_image;
+      if(req.query.user_id){
+        return Promise.all([scheduleProm, Vibrant.from(image).getPalette(),favorites.once('value')])
+      }
       return Promise.all([scheduleProm, Vibrant.from(image).getPalette()])
 
     }).then(responses =>{
+      let allfavorites = [];
+      if(responses[2]){
+        snapshot = responses[2];
+        snapshot.forEach((snap,index)=>{
+          //let key = snapshot[index].getKey();
+          let key = snap.key;
+          let val = snap.val();
+          if(val.userid == req.query.user_id)
+            allfavorites = [...allfavorites,val.showid]
+        })
+      }
+      const favorites = responses[0].shows.reduce((acc,curr) =>{
+        if(allfavorites.indexOf(curr.show.id) >=0)
+          return [...acc,curr];
 
-      res.send({...responses[0],color:responses[1]});
+        return [...acc];
+      },[])
+
+      res.send({...responses[0],color:responses[1], favorites});
     })
 });
 

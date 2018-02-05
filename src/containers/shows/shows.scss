@@ -17,8 +17,8 @@
     position:fixed;
     display: inline-block;
     top:80px;
-    right:0;
-    color:#888;
+    right:25px;
+    color:var(--muted-font-color);
     -webkit-transform: translateX(500px);
     -moz-transform: translateX(500px);
     transform: translateX(500px);
@@ -58,16 +58,15 @@
       flex-wrap:nowrap;
       width: 100%;
       align-items: baseline;
-      color:#888;
+      color:var(--muted-font-color);
       max-width: 1200px;
       .season-number{
         margin:0 10px;
         cursor: pointer;
         &.active,&:hover{
-          color:var(--accent-color);
+          color:var(--muted-color);
         }
       }
-
 
     }
 
@@ -97,5 +96,13 @@
       font-weight: 300;
       width:100%;
     }
+  }
+  .no-eps{
+      color: var(--muted-font-color);
+      font-weight: 300;
+      margin:auto;
+      display: inline-block;
+      width:100%;
+      text-align: center;
   }
 }

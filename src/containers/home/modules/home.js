@@ -1,5 +1,7 @@
 import moment from 'moment'
 import {setLoader} from '../../app/modules/app'
+import firebase, { auth, provider } from '../../../firebase.js';
+
 
 export const GET_SCHEDULE = 'GET_SCHEDULE'
 export const SET_FILTER = 'SET_FILTER'
@@ -15,7 +17,9 @@ const initialState = {
   times:[],
   filter:'',
   date:new Date(),
-  color:[255,255,255]
+  color:[255,255,255],
+  mute_color:[255,255,255],
+  favorites:[],
 }
 
 export default (state = initialState, action) => {
@@ -24,8 +28,10 @@ export default (state = initialState, action) => {
       return {
         ...state,
         shows: action.shows,
+        favorites: action.favorites,
         times:action.times,
         color:action.color,
+        muted_color:action.muted_color,
         loading:false,
       }
 
@@ -52,24 +58,29 @@ export default (state = initialState, action) => {
 }
 
 export const getSchedule = (filter='',date=moment().format('YYYY-MM-DD')) => {
-  const filter_str = `?filter=${filter}`;
-  const date_str = `date=${date}`;
-  return dispatch => {
-    dispatch({
-     type: LOADING_API,
-   })
-    fetch(`${SCHEDULE_API}${filter_str}&${date_str}`)
-      .then(response => response.json())
-      .then(res =>{
-        const schedule = res;
-        const color =  res.color.Muted._rgb;
-        const time_of_day = res.time_of_day;
-        return dispatch({
-          type: GET_SCHEDULE,
-          ...schedule,
-          color,
-          time_of_day,
-        })
+    return dispatch => {
+      dispatch({
+       type: LOADING_API,
+      })
+      auth.onAuthStateChanged((user) => {
+        const filter_str = `?filter=${filter}`;
+        const date_str = `date=${date}`;
+        const user_id_str = user ? `&user_id=${user.uid}`:'';
+        fetch(`${SCHEDULE_API}${filter_str}&${date_str}${user_id_str}`)
+          .then(response => response.json())
+          .then(res =>{
+            const schedule = res;
+            const color =  res.color.Muted._rgb;
+            const muted_color = res.color.DarkMuted ?  res.color.DarkMuted._rgb : res.color.LightMuted._rgb;
+            const time_of_day = res.time_of_day;
+            return dispatch({
+              type: GET_SCHEDULE,
+              ...schedule,
+              color,
+              muted_color,
+              time_of_day,
+            })
+          });
       });
   }
 }

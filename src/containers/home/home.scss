@@ -21,7 +21,7 @@
       transform: translateX(0);
     }
     input{
-      color:var(--accent-color) !important;
+      color:var(--muted-font-color) !important;
     }
   }
   .filter-text-container{
@@ -128,5 +128,20 @@
     -moz-transition:opacity .5s ease;
     transition:opacity .5s ease;
 
+  }
+  .favorites{
+    display:grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px,1fr));
+    grid-auto-rows: 150px;
+    grid-gap:20px;
+    padding: 0 100px 50px;
+    width: 100%;
+  }
+  .favorites-container{
+    width:100%;
+    max-width: 1200px;
+    -webkit-transition:opacity .5s ease;
+    -moz-transition:opacity .5s ease;
+    transition:opacity .5s ease;
   }
 }

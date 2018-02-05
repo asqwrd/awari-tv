@@ -3,7 +3,7 @@ import { push } from 'react-router-redux'
 import { bindActionCreators } from 'redux'
 import {connectWithLifecycle} from 'react-lifecycle-component/lib'
 import {getShow, getSeason} from './modules/shows'
-import {setBackGroundColor, setBackGroundImage, changefontcolor} from '../app/modules/app'
+import {setBackGroundColor, setBackGroundImage, changefontcolor,changeColorVar} from '../app/modules/app'
 import moment from 'moment'
 import './shows.css'
 import TV_IMAGE from '../app/images/tv_logo.svg';
@@ -25,17 +25,20 @@ import RefreshIndicator from 'material-ui/RefreshIndicator';
 
 
 import withinview from 'withinviewport/withinviewport'
+import {List, ListItem} from 'material-ui/List';
+import Subheader from 'material-ui/Subheader';
 
 
 
 const Shows = (props) => {
-  const {show, time_of_day, backgroundColor, active_season, episodes, body, loading} = props;
-  this.showid = props.match.params.id;
+  const {show, time_of_day, backgroundColor, backgroundColor2, active_season, episodes, body, loading,appBackground} = props;
+  this.props = props;
   this.show = show;
   this.time_of_day = time_of_day;
   this.setBackGroundColor = props.setBackGroundColor;
   this.setBackGroundImage = props.setBackGroundImage;
   this.backgroundColor = backgroundColor;
+  this.backgroundColor2 = backgroundColor2;
   this.scrollBody = body;
   this.handleScroll = (e)=>{
     if((this.seasonNav && this.scrollBody) && !withinview(this.seasonNav,{container:this.scrollBody, top:70})){
@@ -44,6 +47,7 @@ const Shows = (props) => {
       this.floatingNav.classList.remove('show');
     }
   }
+  console.log(backgroundColor2);
   if(this.seasonNav && this.scrollBody)
   this.scrollBody.addEventListener('scroll', this.handleScroll,true)
 
@@ -85,42 +89,51 @@ const Shows = (props) => {
         </nav>
       </header>
       <nav className="floating-nav" ref={(elm)=>this.floatingNav = elm}>
-        <h1 className="season-label">Seasons</h1>
-        {
-          show.seasons.map((season, index)=>{
-            return <div onClick={()=>{props.getSeason(season); this.scrollBody.scrollTo(0,0)}} className={`season-number ${active_season.number == season.number ? 'active':''}`} key={season.id}>{season.number}</div>
-          })
+        <Paper zDepth={1} style={{backgroundColor:'var(--muted-color)'}}>
+          <List>
+          <Subheader className="season-label" style={{textAlign:'center',padding:'0',color:`${appBackground}`}}>Seasons</Subheader>
 
-        }
+          {
+            show.seasons.map((season, index)=>{
+              return <ListItem style={{textAlign:'center'}} onClick={()=>{props.getSeason(season); this.scrollBody.scrollTo(0,0)}} className={`season-number ${active_season.number == season.number ? 'active':''}`} key={season.id}>{season.number}</ListItem>
+            })
+
+          }
+          </List>
+        </Paper>
+
       </nav>
       <div className="show-content">
-        <Paper style={{height:"100%", maxWidth:"1200px"}}>
-          <Table fixedHeader={true}>
-             <TableHeader
-                displaySelectAll={false}
-                adjustForCheckbox={false}
-                style={{backgroundColor:'transparent'}}
-             >
-             <TableRow>
-               <TableHeaderColumn style={{width:'100px'}}>#</TableHeaderColumn>
-               <TableHeaderColumn style={{textAlign: 'center'}}>Episodes</TableHeaderColumn>
-               <TableHeaderColumn style={{textAlign: 'center'}}>Date</TableHeaderColumn>
-             </TableRow>
-           </TableHeader>
-           <TableBody displayRowCheckbox={false}>
-              {
-                episodes.map((eps)=>{
-                  return (
-                    <TableRow key={eps.id}>
-                      <TableRowColumn style={{width:'100px'}}>{eps.number}</TableRowColumn>
-                      <TableRowColumn>{eps.name}</TableRowColumn>
-                      <TableRowColumn style={{textAlign: 'center'}}>{moment(eps.airstamp).format('MMMM Do, YYYY')}</TableRowColumn>
-                    </TableRow>
-                  )
-                })
-              }
-            </TableBody>
-          </Table>
+        <Paper style={{height:"100%", width:'100%', maxWidth:"1200px", backgroundColor:'var(--muted-color)',minHeight:'200px', display:'flex',alignItems:'center'}}>
+          {
+            episodes.length == 0 ? <h1 className="no-eps">No episodes</h1>:
+            <Table fixedHeader={true}   style={{backgroundColor:'var(--muted-color)', color:'#fff'}}>
+               <TableHeader
+                  displaySelectAll={false}
+                  adjustForCheckbox={false}
+                  style={{backgroundColor:'transparent'}}
+               >
+               <TableRow style={{color:'var(muted-font-color)'}} displayBorder={false}>
+                 <TableHeaderColumn style={{width:'100px',color:'var(muted-font-color)'}}>#</TableHeaderColumn>
+                 <TableHeaderColumn style={{textAlign: 'left', color:'var(muted-font-color)'}}>Episodes</TableHeaderColumn>
+                 <TableHeaderColumn style={{textAlign: 'center', color:'var(muted-font-color)'}}>Date</TableHeaderColumn>
+               </TableRow>
+             </TableHeader>
+             <TableBody displayRowCheckbox={false}>
+                {
+                  episodes.map((eps)=>{
+                    return (
+                      <TableRow key={eps.id} style={{color:'var(muted-font-color)'}} displayBorder={false}>
+                        <TableRowColumn style={{width:'100px'}}>{eps.number}</TableRowColumn>
+                        <TableRowColumn>{eps.name}</TableRowColumn>
+                        <TableRowColumn style={{textAlign: 'center'}}>{eps.airstamp ? moment(eps.airstamp).format('MMMM Do, YYYY') : 'No air date yet'}</TableRowColumn>
+                      </TableRow>
+                    )
+                  })
+                }
+              </TableBody>
+            </Table>
+          }
         </Paper>
       </div>
     </div>
@@ -129,12 +142,14 @@ const Shows = (props) => {
 }
 
 const setColors = ()=>{
-  if((this.show && this.backgroundColor)){
+  if((this.show && this.backgroundColor && this.backgroundColor2)){
     this.show.image = this.show.image ? this.show.image: {original:this.day_bg}
     this.image = this.show.image.original;
     this.setBackGroundColor(this.backgroundColor);
     this.setBackGroundImage(this.show.image.original);
-    changefontcolor(this.backgroundColor);
+    changefontcolor('--accent-color',this.backgroundColor);
+    changefontcolor('--muted-font-color',this.backgroundColor2);
+    changeColorVar('--muted-color',this.backgroundColor2);
   }
 
 }
@@ -143,9 +158,9 @@ const firstLoad = ()=>{
   this.image = undefined;
 }
 
-const reloadPage = (prevprops,nextprops)=>{
-  if(prevprops.match.params.id !=prevprops.show.id){
-    prevprops.getShow(prevprops.match.params.id)
+const reloadPage = (nextprops)=>{
+  if(this.props.match.params.id !== nextprops.match.params.id){
+    this.props.getShow(nextprops.match.params.id)
   }
 }
 
@@ -154,19 +169,21 @@ const reloadPage = (prevprops,nextprops)=>{
 const mapStateToProps = state => ({
   show: state.shows.show,
   backgroundColor:state.shows.color,
+  backgroundColor2:state.shows.muted_color,
   time_of_day: state.app.time_of_day,
   active_season: state.shows.active_season,
   episodes: state.shows.episodes,
   body:state.app.body,
+  appBackground:state.app.backgroundColor,
   loading:state.shows.loading,
 })
 
 const mapDispatchToProps = dispatch => ({
   componentDidUpdate:()=>setColors(),
-  componentWillReceiveProps:(prevprops,nextprops)=>reloadPage(prevprops,nextprops),
+  componentWillReceiveProps:(nextprops)=>reloadPage(nextprops),
   componentWillUnmount:()=>this.scrollBody.removeEventListener('scroll',this.handleScroll,true),
   ...bindActionCreators({
-  componentDidMount:()=>getShow(this.showid),
+  componentDidMount:()=>getShow(this.props.match.params.id),
   getShow,
   setBackGroundColor,
   setBackGroundImage,

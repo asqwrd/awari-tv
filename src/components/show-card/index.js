@@ -9,13 +9,13 @@ import NO_IMAGE from '../../containers/app/images/no-image.png';
 
 
 const ShowCard = props => {
-  const {show} = props;
+  const {show, overlay} = props;
   const {image, name, network} = show;
   return (
     <div className="show-card-container">
       <Card className="show-card">
         <CardMedia
-          overlay={<CardTitle title={name} subtitle={network ? network.name: 'No network'} />}
+          overlay={overlay ? <CardTitle title={name} subtitle={network ? network.name: 'No network'} />:false}
           mediaStyle={
             {
               height: "100%",
@@ -36,7 +36,7 @@ const ShowCard = props => {
             }
           }
         >
-          <img src={image ? image.original:NO_IMAGE} alt="" />
+          <img src={image && image.original ? image.original:NO_IMAGE} alt="" />
         </CardMedia>
       </Card>
     </div>
@@ -46,7 +46,8 @@ const ShowCard = props => {
 
 
 ShowCard.propTypes = {
-  show: PropTypes.object.isRequired
+  show: PropTypes.object.isRequired,
+  overlay:PropTypes.bool,
 };
 
 

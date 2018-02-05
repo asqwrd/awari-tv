@@ -12,6 +12,7 @@ const initialState = {
   show: {image:{original:''},seasons:[],name:'', _embedded:{episodes:[]}},
   active_season:{},
   color:[255,255,255],
+  mute_color:[255,255,255],
   loading:false,
   episodes:[]
 }
@@ -25,6 +26,7 @@ export default (state = initialState, action) => {
         active_season:action.active_season,
         episodes:action.episodes,
         color:action.color,
+        muted_color:action.muted_color,
         loading:false,
       }
 
@@ -57,12 +59,14 @@ export const getShow = (showid) => {
         const active_season =show.seasons[0];
         const episodes =show.seasons[0].episodes;
         const color = res.color.Muted._rgb;
+        const muted_color = res.color.DarkMuted ?  res.color.DarkMuted._rgb : res.color.LightMuted._rgb;
         return dispatch({
           type: GET_SHOW,
           show,
           active_season,
           episodes,
           color,
+          muted_color,
         })
       });
   }

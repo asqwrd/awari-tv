@@ -14,23 +14,41 @@ import {
   white, darkBlack, fullBlack,} from 'material-ui/styles/colors';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
-import {setBackGroundColor, setBackGroundImage, setTimeOfDay, setBody, getSearch, clearSearchText, updateSearchText} from './modules/app'
+import {setBackGroundColor,
+  setBackGroundImage,
+  setTimeOfDay,
+  setBody,
+  getSearch,
+  clearSearchText,
+  updateSearchText,
+  login,
+  logout,
+  onAuthStateChanged,
+  togglePopover,
+} from './modules/app'
 import logoLight from './images/logo-light.svg'
 import moment from 'moment'
 import RefreshIndicator from 'material-ui/RefreshIndicator';
 import AutoComplete from 'material-ui/AutoComplete';
+import RaisedButton from 'material-ui/RaisedButton';
+import Popover from 'material-ui/Popover';
+import Menu from 'material-ui/Menu';
+import MenuItem from 'material-ui/MenuItem';
+import Avatar from 'material-ui/Avatar';
+
 
 
 
 
 const muiTheme = getMuiTheme({
   palette: {
-    primary1Color: '#582335',
-    primary2Color: fullBlack,
-    primary3Color: fullBlack,
-    accent1Color: '#582335',
-    accent2Color: fullBlack,
-    accent3Color: grey500,
+    primary1Color: 'var(--muted-color)',
+    primary2Color: 'var(--muted-color)',
+    primary3Color: 'var(--muted-color)',
+    accent1Color: 'var(--muted-color)',
+    accent2Color: 'var(--muted-color)',
+    accent3Color: 'var(--muted-color)',
+    pickerHeaderColor: 'var(--muted-color)',
     textColor: darkBlack,
     alternateTextColor: white,
   },
@@ -39,19 +57,18 @@ const muiTheme = getMuiTheme({
 
 
 const App = (props) =>{
-  const {backgroundColor,backgroundImage,gradient, loading, searchtext} = props;
+  const {backgroundColor,backgroundImage,gradient, loading, searchtext, user} = props;
   this.backgroundColor = backgroundColor;
   this.setTimeOfDay = props.setTimeOfDay;
   this.setScrollPosition = props.setScrollPosition;
   this.html = document.querySelector('html');
+  this.onAuthStateChanged = props.onAuthStateChanged;
   this.handleUpdateInput = (searchText) => {
     props.updateSearchText(searchText);
     props.getSearch(searchText);
   };
 
   this.handleNewRequest = (chosenRequest,index) => {
-    console.log(chosenRequest);
-    console.log(props);
     if(chosenRequest && chosenRequest.id){
       props.changePage(`/shows/${chosenRequest.id}`);
     }else if(chosenRequest){
@@ -61,13 +78,22 @@ const App = (props) =>{
     props.clearSearchText();
   };
 
+  this.handleClick = (event)=>{
+    event.preventDefault();
+    props.togglePopover()
+    console.log('hi')
+  }
+  this.handleRequestClose = ()=>{
+    props.togglePopover()
+  }
+
   return (
   <MuiThemeProvider muiTheme={muiTheme}>
     <div className="app">
       <div className="app-body" ref={(elm)=>{this.appBody = elm; props.setBody(this.appBody)}} style={{backgroundColor}}>
         <header className="app-header"  ref={(elm)=>this.appHeader = elm}>
-          <NavLink to='/'><img className="logo" src={logoLight}/></NavLink>
-          <div>
+          <div className="logo-container"><NavLink to='/'><img className="logo" src={logoLight}/></NavLink></div>
+          <div className="search">
             <AutoComplete
               hintText="Search"
               searchText={props.searchtext}
@@ -77,8 +103,32 @@ const App = (props) =>{
               dataSourceConfig={{text:'name', value:'id'}}
               openOnFocus={true}
               filter={AutoComplete.fuzzyFilter}
+              fullWidth={true}
             />
           </div>
+          <nav className="header-nav">
+          {user ?
+            <div>
+              <div className="avatar-container" ref={(elm)=>this.avatar = elm}>
+                <Avatar src={user.photoURL}   onClick={this.handleClick} />
+              </div>
+              <Popover
+                open={props.login_open}
+                anchorEl={this.avatar}
+                anchorOrigin={{horizontal: 'right', vertical: 'bottom'}}
+                targetOrigin={{horizontal: 'right', vertical: 'top'}}
+                onRequestClose={this.handleRequestClose}
+              >
+                <Menu>
+                  <MenuItem primaryText="Favorites" />
+                  <MenuItem primaryText="Sign out" onClick={props.logout} />
+                </Menu>
+              </Popover>
+            </div>
+            :
+            <button onClick={props.login}>Log In</button>
+          }
+          </nav>
         </header>
         <div className="dynamic-background">
           <div className="background-color" style={{backgroundColor}}></div>
@@ -110,6 +160,8 @@ const mapStateToProps = (state, ownProps) => ({
   loading: state.app.loading,
   searchResults:state.app.searchResults,
   searchtext:state.app.searchtext,
+  user:state.app.user,
+  login_open:state.app.login_open,
 
 })
 
@@ -131,7 +183,7 @@ const attachEvents = ()=>{
   })
 
   const hour = moment().hour();
-  switch (true){
+  /*switch (true){
     case hour >=4 && hour < 12:
       this.setTimeOfDay('morning');
       break;
@@ -143,7 +195,8 @@ const attachEvents = ()=>{
       break;
     case hour >= 22 || (hour  >= 0 && hour < 4):
       this.setTimeOfDay('latenight');
-  }
+  }*/
+  this.onAuthStateChanged();
 }
 
 
@@ -158,6 +211,10 @@ const mapDispatchToProps = dispatch => ({
     getSearch,
     clearSearchText,
     updateSearchText,
+    onAuthStateChanged,
+    login,
+    logout,
+    togglePopover,
     changePage:(page)=> push(page),
 }, dispatch)})
 

@@ -75,7 +75,7 @@ const setColors = ()=>{
     this.image = this.show.image.original;
     this.setBackGroundColor(this.backgroundColor);
     this.setBackGroundImage(this.show.image.original);
-    changefontcolor(this.backgroundColor);
+    changefontcolor('--accent-color',this.backgroundColor);
   }
 }
 

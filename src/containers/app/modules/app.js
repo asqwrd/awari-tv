@@ -1,6 +1,5 @@
-import ColorThief from '@mariotacke/color-thief';
+import firebase, { auth, provider } from '../../../firebase.js';
 
-const color_thief = new ColorThief();
 
 export const SET_BACKGROUND_COLOR = 'SET_BACKGROUND_COLOR'
 export const SET_BACKGROUND_IMAGE = 'SET_BACKGROUND_IMAGE'
@@ -10,11 +9,15 @@ export const GET_SEARCH = 'GET_SEARCH'
 export const LOADING_API = 'LOADING_API'
 export const CLEAR_SEARCH_TEXT = 'CLEAR_SEARCH_TEXT'
 export const UPDATE_SEARCH_TEXT = 'UPDATE_SEARCH_TEXT'
+export const LOGIN = 'LOGIN'
+export const LOGOUT = 'LOGOUT'
+export const TOGGLE_POPOVER = 'TOGGLE_POPOVER'
 
 
 
 const SCHEDULE_API = `//${window.location.hostname}:3002/api/schedule`;
 const SEARCH_API = `//${window.location.hostname}:3002/api/search/shows`;
+const AUTH_API = `//${window.location.hostname}:3002/api/auth`;
 
 const initialState = {
   backgroundColor: [255,255,255],
@@ -24,6 +27,8 @@ const initialState = {
   loading:false,
   searchtext:'',
   searchResults:[],
+  user:null,
+  login_open:false,
 
 }
 
@@ -68,6 +73,26 @@ export default (state = initialState, action) => {
           loading: action.loading,
         }
 
+      case LOGIN:
+        return {
+          ...state,
+          user: action.user,
+          login_open:false,
+        }
+
+      case LOGOUT:
+        return {
+          ...state,
+          user: null,
+          login_open:false,
+        }
+
+      case TOGGLE_POPOVER:
+        return {
+          ...state,
+          login_open: !state.login_open,
+        }
+
       case SET_BODY:
         return {
           ...state,
@@ -102,16 +127,21 @@ export const setBackGroundImage = (image) =>{
   }
 }
 
-export const changefontcolor = (rgb:Array<any>)=>{
+export const changefontcolor = (cssVar, rgb:Array<any>)=>{
       let c = 'rgb(' + rgb[0] + ',' + rgb[1] + ',' + rgb[2] + ')';
       let o = Math.round(((parseInt(rgb[0]) * 299) + (parseInt(rgb[1]) * 587) + (parseInt(rgb[2]) * 114)) / 1000);
       const html = document.querySelector('html');
       if(o > 125){
-
-        html.style.setProperty('--accent-color','#333');
+        html.style.setProperty(cssVar,'#333');
       }else{
-        html.style.setProperty('--accent-color','#fff');
+        html.style.setProperty(cssVar,'#fff');
       }
+}
+
+export const changeColorVar = (cssVar,rgb:Array<any>)=>{
+      const color = 'rgb(' + rgb[0] + ',' + rgb[1] + ',' + rgb[2] + ')';
+      const html = document.querySelector('html');
+      html.style.setProperty(cssVar,color);
 }
 
 export const setTimeOfDay = (time) =>{
@@ -169,5 +199,55 @@ export const getSearch = (searchText='') => {
           searchResults,
         })
       });
+  }
+}
+
+export const login = () =>{
+  return dispatch =>{
+    auth.signInWithPopup(provider)
+      .then((result) => {
+        const user = result.user;
+        return dispatch({
+          type: LOGIN,
+          user,
+        })
+      });
+  }
+}
+
+export const logout = () =>{
+  return dispatch =>{
+    auth.signOut()
+      .then(() => {
+        return dispatch({
+          type: LOGOUT,
+        })
+      });
+  }
+}
+
+
+export const onAuthStateChanged = ()=>{
+  return dispatch =>{
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        user.getIdToken().then((token)=>{
+          fetch(`${AUTH_API}?token=${token}`).then(res=>{
+            return dispatch({
+              type: LOGIN,
+              user,
+            })
+          })
+        })
+      }
+    });
+  }
+}
+
+export const togglePopover = () =>{
+  return dispatch =>{
+    return dispatch({
+      type:TOGGLE_POPOVER,
+    })
   }
 }
