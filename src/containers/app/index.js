@@ -7,6 +7,7 @@ import { withRouter } from 'react-router'
 import Home from '../home'
 import Shows from '../shows'
 import Search from '../search'
+import Favorites from '../favorites'
 import './app.css'
 import {
   white, darkBlack,} from 'material-ui/styles/colors';
@@ -45,7 +46,7 @@ const muiTheme = getMuiTheme({
     accent3Color: 'var(--muted-color)',
     pickerHeaderColor: 'var(--muted-color)',
     textColor: darkBlack,
-    alternateTextColor: white,
+    alternateTextColor: '#aaa',
   },
 
 });
@@ -76,7 +77,6 @@ const App = (props) =>{
   this.handleClick = (event)=>{
     event.preventDefault();
     props.togglePopover()
-    console.log('hi')
   }
   this.handleRequestClose = ()=>{
     props.togglePopover()
@@ -115,7 +115,7 @@ const App = (props) =>{
                 onRequestClose={this.handleRequestClose}
               >
                 <Menu>
-                  <MenuItem primaryText="Favorites" />
+                  <MenuItem primaryText="Favorites" onClick={()=>{props.changePage('/favorites'); props.togglePopover()}}/>
                   <MenuItem primaryText="Sign out" onClick={props.logout} />
                 </Menu>
               </Popover>
@@ -140,6 +140,7 @@ const App = (props) =>{
           <Route exact path="/" component={Home} />
           <Route exact path="/shows/:id" component={Shows} />
           <Route exact path="/search/:query" component={Search} />
+          <Route exact path="/favorites" component={Favorites} />
         </main>
       </div>
     </div>

@@ -2,10 +2,10 @@ import React from 'react'
 import { push } from 'react-router-redux'
 import { bindActionCreators } from 'redux'
 import {connectWithLifecycle} from 'react-lifecycle-component/lib'
-import {getSearch} from './modules/search'
-import {setBackGroundColor, setBackGroundImage, changefontcolor, setTimeOfDay, changeColorVar} from '../app/modules/app'
+import {getFavorites} from './modules/favorites'
+import {setBackGroundColor, setBackGroundImage, changefontcolor, setTimeOfDay,changeColorVar} from '../app/modules/app'
 import ShowCard from '../../components/show-card'
-import './search.css'
+import './favorites.css'
 import MIDDAY from '../app/images/midday.jpg';
 import MORNING from '../app/images/morning.jpg';
 import EVENING from '../app/images/evening.jpg';
@@ -13,7 +13,7 @@ import LATENIGHT from '../app/images/latenight.jpg';
 import RefreshIndicator from 'material-ui/RefreshIndicator';
 
 
-const Search = props => {
+const Favorites = props => {
   const {shows, backgroundColor, time_of_day, body, loading,backgroundColor2} = props;
   this.backgroundColor = backgroundColor;
   this.backgroundColor2 = backgroundColor2;
@@ -22,7 +22,7 @@ const Search = props => {
   this.setTimeOfDay = props.setTimeOfDay;
   this.show = shows[0] ? shows[0]:null;
   this.time_of_day = time_of_day;
-  this.search = props.match.params.query;
+  this.favorites = props.match.params.query;
   this.scrollBody = body;
 
   this.scrollBody = body;
@@ -38,25 +38,26 @@ const Search = props => {
 
 
   return (
-    <div className="search-container">
+    <div className="favorites-container">
       <RefreshIndicator
         size={50}
         left={50}
         top={50}
+        loadingColor={'var(--muted-color)'}
         status={loading ? 'loading':'hide'}
         style={{position:'fixed',zIndex:1000, transform:'translate(-50%,-50%)', left:'50%', top:'50%'}}
       />
-      <header className="search-header" ref={(elm)=>this.searchHeader = elm} style={{opacity:loading? 0.3:1, pointerEvents:loading? 'none':'auto'}}>
+      <header className="favorites-header" ref={(elm)=>this.favoritesHeader = elm} style={{opacity:loading? 0.3:1, pointerEvents:loading? 'none':'auto'}}>
         <span className="date">
-          Search Results
+          Favorites
         </span>
-        <p className="day">{this.search}</p>
+        <p className="day">{this.favorites}</p>
       </header>
 
-      <div className="search-content" style={{opacity:loading? 0:1, pointerEvents:loading? 'none':'auto'}}>
+      <div className="favorites-content" style={{opacity:loading? 0:1, pointerEvents:loading? 'none':'auto'}}>
         {
           shows.map((show)=>{
-            return <div onClick={()=>props.changePage(show.id)} key={show.id}><ShowCard show={show} /></div>
+            return <div onClick={()=>props.changePage(show.id)} key={show.id}><ShowCard show={show} overlay={true}/></div>
           })
         }
       </div>
@@ -74,30 +75,22 @@ const setColors = ()=>{
     changefontcolor('--muted-font-color',this.backgroundColor2);
     changeColorVar('--muted-color',this.backgroundColor2);
   }
-
-}
-
-const reloadPage = (prevprops,nextprops)=>{
-  if(prevprops.match.params.query !== this.search){
-    prevprops.getSearch(prevprops.match.params.query)
-  }
 }
 
 const mapStateToProps = state => ({
-  shows: state.search.shows,
-  time_of_day:state.search.time_of_day,
-  backgroundColor:state.search.color,
-  backgroundColor2:state.search.muted_color,
+  shows: state.favorites.shows,
+  time_of_day:state.favorites.time_of_day,
+  backgroundColor:state.favorites.color,
+  backgroundColor2:state.favorites.muted_color,
   body: state.app.body,
-  loading: state.search.loading,
+  loading: state.favorites.loading,
 })
 
 const mapDispatchToProps = dispatch => ({
   componentDidUpdate:()=>setColors(),
-  componentWillReceiveProps:(prevprops,nextprops)=>reloadPage(prevprops,nextprops),
   ...bindActionCreators({
-  componentDidMount:()=>getSearch(this.search),
-  getSearch,
+  componentDidMount:()=>getFavorites(),
+  getFavorites,
   setTimeOfDay,
   setBackGroundColor,
   setBackGroundImage,
@@ -107,4 +100,4 @@ const mapDispatchToProps = dispatch => ({
 export default connectWithLifecycle(
   mapStateToProps,
   mapDispatchToProps
-)(Search)
+)(Favorites)

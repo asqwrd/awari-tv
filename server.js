@@ -25,6 +25,72 @@ app.use(function(req, res, next) {
   next();
 });
 
+const getShow = (id,addEmbed=true)=>{
+  let embed = '';
+  if(addEmbed)embed = '?embed[]=nextepisode&embed[]=episodes&embed[]=seasons'
+
+  return request({
+    method: 'GET',
+    uri: `http://api.tvmaze.com/shows/${id}${embed}`,
+    json: true,
+    headers: {
+        'User-Agent': 'Request-Promise'
+    }
+  }).then((response)=>{
+    const show = response;
+    if(!addEmbed){
+      return new Promise((resolve, reject)=>{
+        resolve(show);
+      })
+    }
+    else{
+      show.seasons = show._embedded.seasons;
+      show.seasons.forEach(season=>{
+        let episodes = show._embedded.episodes.filter((episode)=>{
+          return episode.season == season.number;
+        })
+        season.episodes = episodes;
+      })
+      const hour = moment().hour();
+      let time_of_day = 'morning';
+      let time_of_day_image = 'images/morning.jpg';
+      switch (true){
+        case hour >=4 && hour < 12:
+          time_of_day = 'morning';
+          time_of_day_image = 'images/morning.jpg'
+          break;
+        case hour >= 12 && hour < 17:
+          time_of_day = 'midday';
+          time_of_day_image = 'images/midday.jpg'
+          break;
+        case hour >= 18 && hour < 22:
+          time_of_day = 'evening';
+          time_of_day_image = 'images/evening.jpg'
+          break;
+        case hour >= 22 || (hour  >= 0 && hour < 4):
+          time_of_day = 'latenight';
+          time_of_day_image = 'images/latenight.jpg'
+      }
+      const image = show && show.image ? show.image.original:time_of_day_image;
+      const showProm = new Promise((resolve,reject)=>{
+          resolve(show);
+      })
+      return Promise.all([showProm, Vibrant.from(image).getPalette()])
+    }
+  }).then((responses)=>{
+      if(!addEmbed){
+        return new Promise((resolve)=>{
+          resolve({show:responses})
+        })
+      }
+      const show = responses[0];
+      const color = responses[1];
+      return new Promise((resolve,reject)=>{
+        resolve({show,color});
+      })
+  })
+}
+
 app.get('/', (req, res) => res.send('Welcome'));
 app.get('/api/auth', (req,res)=>{
   admin.auth().verifyIdToken(req.query.token).then((decode)=>{
@@ -91,53 +157,67 @@ app.get('/api/search/shows/full', (req, res) => {
 });
 
 app.get('/api/shows/:id', (req, res) => {
-    request({
-      method: 'GET',
-      uri: `http://api.tvmaze.com/shows/${req.params.id}?embed[]=nextepisode&embed[]=episodes&embed[]=seasons`,
-    }).then((response)=>{
-      response = JSON.parse(response);
-      const show = response;
-      show.seasons = show._embedded.seasons;
-      show.seasons.forEach(season=>{
-        let episodes = show._embedded.episodes.filter((episode)=>{
-          return episode.season == season.number;
-        })
-        season.episodes = episodes;
-      })
-      const hour = moment().hour();
-      let time_of_day = 'morning';
-      let time_of_day_image = 'images/morning.jpg';
-      switch (true){
-        case hour >=4 && hour < 12:
-          time_of_day = 'morning';
-          time_of_day_image = 'images/morning.jpg'
-          break;
-        case hour >= 12 && hour < 17:
-          time_of_day = 'midday';
-          time_of_day_image = 'images/midday.jpg'
-          break;
-        case hour >= 18 && hour < 22:
-          time_of_day = 'evening';
-          time_of_day_image = 'images/evening.jpg'
-          break;
-        case hour >= 22 || (hour  >= 0 && hour < 4):
-          time_of_day = 'latenight';
-          time_of_day_image = 'images/latenight.jpg'
-      }
-      const image = show && show.image ? show.image.original:time_of_day_image;
-      const showProm = new Promise((resolve,reject)=>{
-          resolve(show);
-      })
-      return Promise.all([showProm, Vibrant.from(image).getPalette()])
-    }).then((responses)=>{
-        const show = responses[0];
-        const color = responses[1];
-        res.send({show,color})
-    })
+  getShow(req.params.id).then(response =>{
+    res.send(response);
+  })
 });
 
-app.get('/api/favorites/:id', (req, res) => {
+app.get('/api/favorites', (req, res) => {
     //redirect('http://api.tvmaze.com/shows/'+ req.params.id, res);
+    if(req.query.user_id){
+      allfavoritesPromise = [];
+      favorites.once('value').then((snapshots)=>{
+        snapshots.forEach((snap)=>{
+          let key = snap.key;
+          let val = snap.val();
+          if(val.userid == req.query.user_id)
+            allfavoritesPromise = [...allfavoritesPromise,getShow(val.showid,false)];
+        })
+        return Promise.all([...allfavoritesPromise]);
+      }).then((responses)=>{
+        const shows = responses.reduce((acc,curr)=>{
+          return [...acc,curr.show];
+        },[]);
+        const hour = moment().hour();
+        let time_of_day = 'morning';
+        let time_of_day_image = 'images/morning.jpg';
+        switch (true){
+          case hour >=4 && hour < 12:
+            time_of_day = 'morning';
+            time_of_day_image = 'images/morning.jpg'
+            break;
+          case hour >= 12 && hour < 17:
+            time_of_day = 'midday';
+            time_of_day_image = 'images/midday.jpg'
+            break;
+          case hour >= 18 && hour < 22:
+            time_of_day = 'evening';
+            time_of_day_image = 'images/evening.jpg'
+            break;
+          case hour >= 22 || (hour  >= 0 && hour < 4):
+            time_of_day = 'latenight';
+            time_of_day_image = 'images/latenight.jpg'
+        }
+        const showProm = new Promise((resolve, reject)=>{
+          resolve(shows);
+        })
+        const time_of_dayProm = new Promise((resolve,reject)=>{
+          resolve(time_of_day);
+        })
+        const image = shows[0].image && shows[0].image.original ? shows[0].image.original:time_of_day_image;
+        return Promise.all([showProm,Vibrant.from(image).getPalette(),time_of_dayProm])
+
+      }).then((responses)=>{
+        const shows = responses[0];
+        const color = responses[1];
+        const time_of_day = responses[2];
+        res.send({shows,color,time_of_day});
+      })
+    }else{
+      res.send('Not logged in!');
+    }
+
+
 });
 
 app.get('/api/schedule', (req, res) => {

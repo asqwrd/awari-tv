@@ -21,6 +21,7 @@ export default (state = initialState, action) => {
         color:action.color,
         time_of_day:action.time_of_day,
         loading:false,
+        muted_color:action.muted_color
       }
 
 
@@ -44,11 +45,13 @@ export const getSearch = (searchText='') => {
         const shows = res.shows;
         const color = res.color.Muted._rgb;
         const time_of_day = res.time_of_day;
+        const muted_color = res.color.DarkMuted ?  res.color.DarkMuted._rgb : res.color.LightMuted._rgb;
         return dispatch({
           type: GET_SEARCH_PAGE,
           shows,
           time_of_day,
           color,
+          muted_color,
         })
       });
   }
