@@ -56,7 +56,7 @@ const Search = props => {
       <div className="search-content" style={{opacity:loading? 0:1, pointerEvents:loading? 'none':'auto'}}>
         {
           shows.map((show)=>{
-            return <div onClick={()=>props.changePage(show.id)} key={show.id}><ShowCard show={show} /></div>
+            return <div onClick={()=>props.changePage(show.id)} key={show.id}><ShowCard show={show} overlay={true} nav={true}/></div>
           })
         }
       </div>

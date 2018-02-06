@@ -185,7 +185,7 @@ const Home = props => {
       <div className="home-content" style={{opacity:loading? 0:1, pointerEvents:loading? 'none':'auto'}}>
         {
           shows.map((show)=>{
-            return <div onClick={()=>props.changePage(show.show.id)} key={show.id}><ShowCard show={show.show} overlay={true} /></div>
+            return <div onClick={()=>props.changePage(show.show.id)} key={show.id}><ShowCard show={show.show} overlay={true}  nav={true}/></div>
           })
         }
       </div>

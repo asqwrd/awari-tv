@@ -57,7 +57,7 @@ const Favorites = props => {
       <div className="favorites-content" style={{opacity:loading? 0:1, pointerEvents:loading? 'none':'auto'}}>
         {
           shows.map((show)=>{
-            return <div onClick={()=>props.changePage(show.id)} key={show.id}><ShowCard show={show} overlay={true}/></div>
+            return <div onClick={()=>props.changePage(show.id)} key={show.id}><ShowCard show={show} overlay={true} nav={true}/></div>
           })
         }
       </div>

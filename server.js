@@ -176,6 +176,7 @@ app.get('/api/favorites', (req, res) => {
         return Promise.all([...allfavoritesPromise]);
       }).then((responses)=>{
         const shows = responses.reduce((acc,curr)=>{
+          curr.show.favorite = true;
           return [...acc,curr.show];
         },[]);
         const hour = moment().hour();
@@ -288,6 +289,11 @@ app.get('/api/schedule', (req, res) => {
 
         return [...acc];
       },[])
+      responses[0].shows.forEach((show)=>{
+        if(allfavorites.indexOf(show.show.id) >=0){
+          show.show.favorite = true;
+        }
+      })
 
       res.send({...responses[0],color:responses[1], favorites});
     })

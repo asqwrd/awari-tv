@@ -3,15 +3,31 @@ import PropTypes from 'prop-types';
 import './show-card.css';
 import {Card, CardMedia, CardTitle} from 'material-ui/Card';
 import NO_IMAGE from '../../containers/app/images/no-image.png';
+import FontIcon from 'material-ui/FontIcon';
+import IconButton from 'material-ui/IconButton';
 
 
 
 
 const ShowCard = props => {
-  const {show, overlay} = props;
-  const {image, name, network} = show;
+  const {show, overlay, nav} = props;
+  const {image, name, network, favorite} = show;
+  this.handleClick = (e)=>{
+    e.stopPropagation();
+  }
   return (
     <div className="show-card-container">
+      {
+        nav ? <nav className='show-nav'>
+          {
+            favorite ? <IconButton tooltip="Unfavorite show" onClick={this.handleClick}>
+              <FontIcon className="material-icons" color={'#fff'}>favorite</FontIcon>
+            </IconButton>:<IconButton tooltip="Favorite show" onClick={this.handleClick}>
+              <FontIcon className="material-icons" color={'#fff'}>favorite_border</FontIcon>
+            </IconButton>
+          }
+        </nav>:''
+      }
       <Card className="show-card">
         <CardMedia
           overlay={overlay ? <CardTitle title={name} subtitle={network ? network.name: 'No network'} />:false}
@@ -47,6 +63,8 @@ const ShowCard = props => {
 ShowCard.propTypes = {
   show: PropTypes.object.isRequired,
   overlay:PropTypes.bool,
+  nav:PropTypes.bool,
+  favoriteShow:PropTypes.func,
 };
 
 
