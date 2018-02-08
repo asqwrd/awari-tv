@@ -2,7 +2,7 @@ import React from 'react'
 import { push } from 'react-router-redux'
 import { bindActionCreators } from 'redux'
 import {connectWithLifecycle} from 'react-lifecycle-component/lib'
-import {getFavorites} from './modules/favorites'
+import {getFavorites, removeFromFavorites} from './modules/favorites'
 import {setBackGroundColor, setBackGroundImage, changefontcolor, setTimeOfDay,changeColorVar} from '../app/modules/app'
 import ShowCard from '../../components/show-card'
 import './favorites.css'
@@ -14,7 +14,7 @@ import RefreshIndicator from 'material-ui/RefreshIndicator';
 
 
 const Favorites = props => {
-  const {shows, backgroundColor, time_of_day, body, loading,backgroundColor2} = props;
+  const {shows, backgroundColor, time_of_day, body, loading,backgroundColor2, user} = props;
   this.backgroundColor = backgroundColor;
   this.backgroundColor2 = backgroundColor2;
   this.setBackGroundColor = props.setBackGroundColor;
@@ -57,7 +57,9 @@ const Favorites = props => {
       <div className="favorites-content" style={{opacity:loading? 0:1, pointerEvents:loading? 'none':'auto'}}>
         {
           shows.map((show)=>{
-            return <div onClick={()=>props.changePage(show.id)} key={show.id}><ShowCard show={show} overlay={true} nav={true}/></div>
+            return <div onClick={()=>props.changePage(show.id)} key={show.id} >
+              <ShowCard show={show} overlay={true} nav={true} user={user} removeFromFavorites={props.removeFromFavorites}/>
+          </div>
           })
         }
       </div>
@@ -84,6 +86,7 @@ const mapStateToProps = state => ({
   backgroundColor2:state.favorites.muted_color,
   body: state.app.body,
   loading: state.favorites.loading,
+  user:state.app.user,
 })
 
 const mapDispatchToProps = dispatch => ({
@@ -94,6 +97,7 @@ const mapDispatchToProps = dispatch => ({
   setTimeOfDay,
   setBackGroundColor,
   setBackGroundImage,
+  removeFromFavorites,
   changePage:(id)=> push(`/shows/${id}`),
 }, dispatch)})
 

@@ -10,7 +10,7 @@ import Search from '../search'
 import Favorites from '../favorites'
 import './app.css'
 import {
-  white, darkBlack,} from 'material-ui/styles/colors';
+ darkBlack,} from 'material-ui/styles/colors';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import {setBackGroundColor,

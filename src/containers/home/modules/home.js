@@ -6,10 +6,14 @@ export const GET_SCHEDULE = 'GET_SCHEDULE'
 export const SET_FILTER = 'SET_FILTER'
 export const SET_DATE = 'SET_DATE'
 export const LOADING_API = 'LOADING_API'
+export const ADD_FAVORITE = 'ADD_FAVORITE'
+export const REMOVE_FAVORITE = 'REMOVE_FAVORITE'
 
 
 
 const SCHEDULE_API = `//${window.location.hostname}:3002/api/schedule`;
+const SCHEDULE_FAVORITES_API = `//${window.location.hostname}:3002/api/favorites`;
+
 
 const initialState = {
   shows: [],
@@ -38,6 +42,36 @@ export default (state = initialState, action) => {
       return {
         ...state,
         filter: action.filter
+      }
+
+    case ADD_FAVORITE:
+      return{
+        ...state,
+        shows: state.shows.reduce((acc,curr)=>{
+          if(curr.show.id === action.show.id){
+            curr.show.favorite = true;
+            curr.show.favorite_key = action.key;
+          }
+          return [...acc,curr];
+
+        },[]),
+        favorites: [...state.favorites,{show:action.show}],
+      }
+
+    case REMOVE_FAVORITE:
+      return{
+        ...state,
+        shows: state.shows.reduce((acc,curr)=>{
+          if(curr.show.id === action.show.id){
+            curr.show.favorite = false;
+          }
+          return [...acc,curr];
+
+        },[]),
+        favorites: state.favorites.filter((show,index)=>{
+          return show.show.id !== action.show.id;
+
+        }),
       }
 
     case SET_DATE:
@@ -81,6 +115,47 @@ export const getSchedule = (filter='',date=moment().format('YYYY-MM-DD')) => {
             })
           });
       });
+  }
+}
+
+export const addToFavorites = (show,userid)=>{
+  return dispatch => {
+    const showid = show.id
+    const params = {showid,userid};
+    fetch(SCHEDULE_FAVORITES_API,{
+      method:'POST',
+      headers: new Headers({
+             'Content-Type': 'application/json', // <-- Specifying the Content-Type
+      }),
+      body: JSON.stringify(params)
+    })
+    .then(response => response.json())
+    .then((response)=>{
+      const key = response.key;
+      dispatch({
+        type: ADD_FAVORITE,
+        show,
+        key,
+      })
+    })
+  }
+}
+
+export const removeFromFavorites = (show,userid,key)=>{
+  return dispatch => {
+    fetch(`${SCHEDULE_FAVORITES_API}/${key}`,{
+      method:'DELETE',
+      headers: new Headers({
+             'Content-Type': 'application/json', // <-- Specifying the Content-Type
+      }),
+    })
+    .then(response => response.json())
+    .then((response)=>{
+      dispatch({
+        type: REMOVE_FAVORITE,
+        show
+      })
+    })
   }
 }
 

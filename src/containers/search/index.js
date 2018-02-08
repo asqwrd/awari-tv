@@ -2,7 +2,7 @@ import React from 'react'
 import { push } from 'react-router-redux'
 import { bindActionCreators } from 'redux'
 import {connectWithLifecycle} from 'react-lifecycle-component/lib'
-import {getSearch} from './modules/search'
+import {getSearch, addToFavorites, removeFromFavorites} from './modules/search'
 import {setBackGroundColor, setBackGroundImage, changefontcolor, setTimeOfDay, changeColorVar} from '../app/modules/app'
 import ShowCard from '../../components/show-card'
 import './search.css'
@@ -14,7 +14,7 @@ import RefreshIndicator from 'material-ui/RefreshIndicator';
 
 
 const Search = props => {
-  const {shows, backgroundColor, time_of_day, body, loading,backgroundColor2} = props;
+  const {shows, backgroundColor, time_of_day, body, loading,backgroundColor2, user} = props;
   this.backgroundColor = backgroundColor;
   this.backgroundColor2 = backgroundColor2;
   this.setBackGroundColor = props.setBackGroundColor;
@@ -56,7 +56,9 @@ const Search = props => {
       <div className="search-content" style={{opacity:loading? 0:1, pointerEvents:loading? 'none':'auto'}}>
         {
           shows.map((show)=>{
-            return <div onClick={()=>props.changePage(show.id)} key={show.id}><ShowCard show={show} overlay={true} nav={true}/></div>
+            return <div onClick={()=>props.changePage(show.id)} key={show.id}>
+              <ShowCard show={show} overlay={true} nav={true} removeFromFavorites={props.removeFromFavorites} addToFavorites={props.addToFavorites} user={user}/>
+            </div>
           })
         }
       </div>
@@ -90,6 +92,7 @@ const mapStateToProps = state => ({
   backgroundColor2:state.search.muted_color,
   body: state.app.body,
   loading: state.search.loading,
+  user:state.app.user,
 })
 
 const mapDispatchToProps = dispatch => ({
@@ -101,6 +104,8 @@ const mapDispatchToProps = dispatch => ({
   setTimeOfDay,
   setBackGroundColor,
   setBackGroundImage,
+  addToFavorites,
+  removeFromFavorites,
   changePage:(id)=> push(`/shows/${id}`),
 }, dispatch)})
 

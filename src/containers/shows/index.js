@@ -2,7 +2,7 @@ import React from 'react'
 import { push } from 'react-router-redux'
 import { bindActionCreators } from 'redux'
 import {connectWithLifecycle} from 'react-lifecycle-component/lib'
-import {getShow, getSeason} from './modules/shows'
+import {getShow, getSeason,addToFavorites, removeFromFavorites} from './modules/shows'
 import {setBackGroundColor, setBackGroundImage, changefontcolor,changeColorVar} from '../app/modules/app'
 import moment from 'moment'
 import './shows.css'
@@ -10,6 +10,12 @@ import MIDDAY from '../app/images/midday.jpg';
 import MORNING from '../app/images/morning.jpg';
 import EVENING from '../app/images/evening.jpg';
 import LATENIGHT from '../app/images/latenight.jpg';
+import NO_IMAGE from '../../containers/app/images/no-image.png';
+import Avatar from 'material-ui/Avatar';
+import FontIcon from 'material-ui/FontIcon';
+import IconButton from 'material-ui/IconButton';
+
+
 import {
   Table,
   TableBody,
@@ -30,7 +36,7 @@ import Subheader from 'material-ui/Subheader';
 
 
 const Shows = (props) => {
-  const {show, time_of_day, backgroundColor, backgroundColor2, active_season, episodes, body, loading,appBackground} = props;
+  const {show, time_of_day, backgroundColor, backgroundColor2, active_season, episodes, body, loading, appBackground, user} = props;
   this.props = props;
   this.show = show;
   this.time_of_day = time_of_day;
@@ -49,7 +55,7 @@ const Shows = (props) => {
   if(this.seasonNav && this.scrollBody)
   this.scrollBody.addEventListener('scroll', this.handleScroll,true)
 
-  const {_embedded } = show;
+  const {_embedded, favorite } = show;
   if(time_of_day === 'morning'){
     this.day_bg = MORNING;
   }else if(time_of_day === 'midday'){
@@ -71,6 +77,14 @@ const Shows = (props) => {
         style={{position:'fixed',zIndex:1000, transform:'translate(-50%,-50%)', left:'50%', top:'50%'}}
       />
       <header className="show-header">
+        <div className="show-profile">
+          {favorite ? <div className='icon'><IconButton tooltip="Unfavorite show" onClick={()=>props.removeFromFavorites(show.favorite_key)}>
+            <FontIcon className="material-icons" color={'#fff'}>favorite</FontIcon>
+          </IconButton></div>:<div className='icon'><IconButton tooltip="Favorite show" onClick={()=> props.addToFavorites(show,user.uid)}>
+            <FontIcon className="material-icons" color={'#fff'}>favorite_border</FontIcon>
+          </IconButton></div>}
+          <Avatar src={show.image && show.image.original ? show.image.original: NO_IMAGE} size={100}/>
+        </div>
         <h1 className="show-name">{show.name}</h1>
         {_embedded.nextepisode ? <p className="show-next-eps">{`Next episode: ${_embedded.nextepisode.name} | ${moment(_embedded.nextepisode.airstamp).format('MMMM Do, YYYY')}`}</p>:_embedded.episodes && _embedded.episodes.length > 0 ? <p className="show-next-eps">{`Last episode: ${_embedded.episodes[_embedded.episodes.length - 1].name} | ${moment(_embedded.episodes[_embedded.episodes.length - 1].airstamp).format('MMMM Do, YYYY')}`}</p>:''}
         <div className="show-current-season">
@@ -170,6 +184,7 @@ const mapStateToProps = state => ({
   body:state.app.body,
   appBackground:state.app.backgroundColor,
   loading:state.shows.loading,
+  user:state.app.user,
 })
 
 const mapDispatchToProps = dispatch => ({
@@ -182,6 +197,8 @@ const mapDispatchToProps = dispatch => ({
   setBackGroundColor,
   setBackGroundImage,
   getSeason,
+  addToFavorites,
+  removeFromFavorites,
   changePage:(id)=> push(`/shows/${id}`),
 }, dispatch)})
 

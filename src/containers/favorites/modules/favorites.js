@@ -2,6 +2,7 @@ import { auth } from '../../../firebase.js';
 
 export const GET_FAVORITES_PAGE = 'GET_FAVORITES_PAGE'
 export const LOADING_API = 'LOADING_API'
+export const REMOVE_FAVORITE = 'REMOVE_FAVORITE'
 
 
 
@@ -24,6 +25,15 @@ export default (state = initialState, action) => {
         time_of_day:action.time_of_day,
         muted_color:action.muted_color,
         loading:false,
+      }
+
+    case REMOVE_FAVORITE:
+      return{
+        ...state,
+        shows: state.shows.filter((show,index)=>{
+          return show.id !== action.show.id;
+
+        }),
       }
 
 
@@ -60,5 +70,24 @@ export const getFavorites = () => {
          })
        });
    })
+  }
+}
+
+export const removeFromFavorites = (show,userid,key)=>{
+  return dispatch => {
+    fetch(`${FAVORITES_API}/${key}`,{
+      method:'DELETE',
+      headers: new Headers({
+             'Content-Type': 'application/json', // <-- Specifying the Content-Type
+      }),
+    })
+    .then(response => response.json())
+    .then((response)=>{
+      console.log(response);
+      dispatch({
+        type: REMOVE_FAVORITE,
+        show
+      })
+    })
   }
 }

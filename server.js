@@ -5,6 +5,8 @@ const Vibrant = require('node-vibrant')
 const firebase = require('firebase');
 const admin = require('firebase-admin');
 
+const bodyParser = require('body-parser')
+
 const serviceAccount = require("./serviceAccount.json");
 
 admin.initializeApp({
@@ -18,6 +20,7 @@ const favorites = db.child('favorites');
 
 
 const app = express();
+app.use(bodyParser.json());
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT,DELETE");
@@ -25,7 +28,7 @@ app.use(function(req, res, next) {
   next();
 });
 
-const getShow = (id,addEmbed=true)=>{
+const getShow = (req,res,id,addEmbed=true,key)=>{
   let embed = '';
   if(addEmbed)embed = '?embed[]=nextepisode&embed[]=episodes&embed[]=seasons'
 
@@ -40,6 +43,7 @@ const getShow = (id,addEmbed=true)=>{
     const show = response;
     if(!addEmbed){
       return new Promise((resolve, reject)=>{
+        if(key) show.favorite_key = key;
         resolve(show);
       })
     }
@@ -75,6 +79,9 @@ const getShow = (id,addEmbed=true)=>{
       const showProm = new Promise((resolve,reject)=>{
           resolve(show);
       })
+      if(req.query.user_id){
+        return Promise.all([showProm, Vibrant.from(image).getPalette(),favorites.once('value')])
+      }
       return Promise.all([showProm, Vibrant.from(image).getPalette()])
     }
   }).then((responses)=>{
@@ -83,7 +90,24 @@ const getShow = (id,addEmbed=true)=>{
           resolve({show:responses})
         })
       }
+      let isFavorite = false;
+      let favorite_key;
+      if(responses[2]){
+        snapshot = responses[2];
+        snapshot.forEach((snap,index)=>{
+          //let key = snapshot[index].getKey();
+          let key = snap.key;
+          let val = snap.val();
+          if(val.userid == req.query.user_id && val.showid == id){
+            isFavorite = true;
+            favorite_key = key;
+          }
+        })
+      }
       const show = responses[0];
+      show.favorite = isFavorite;
+      show.favorite_key = favorite_key;
+
       const color = responses[1];
       return new Promise((resolve,reject)=>{
         resolve({show,color});
@@ -149,15 +173,40 @@ app.get('/api/search/shows/full', (req, res) => {
         resolve({shows,time_of_day});
       })
       const image = shows[0] && shows[0].image ? shows[0].image.original:time_of_day_image;
-      return Promise.all([searchProm, Vibrant.from(image).getPalette()])
+      if(req.query.user_id){
+        return Promise.all([searchProm, Vibrant.from(image).getPalette(),favorites.once('value')])
+      }
 
+      return Promise.all([searchProm, Vibrant.from(image).getPalette()])
     }).then(response=>{
+      let allfavorites = [];
+      let allfavoritesObj = [];
+      if(response[2]){
+        snapshot = response[2];
+        snapshot.forEach((snap,index)=>{
+          //let key = snapshot[index].getKey();
+          let key = snap.key;
+          let val = snap.val();
+          if(val.userid == req.query.user_id)
+            allfavorites = [...allfavorites,{showid:val.showid, key}]
+        })
+      }
+
+      response[0].shows.forEach((show)=>{
+        let isFavorite = allfavorites.findIndex((fav)=>{
+          return fav.showid == show.id;
+        })
+        if(isFavorite >= 0){
+          show.favorite = true;
+          show.favorite_key = allfavorites[isFavorite].key;
+        }
+      })
       res.send({...response[0],color:response[1]});
     })
 });
 
 app.get('/api/shows/:id', (req, res) => {
-  getShow(req.params.id).then(response =>{
+  getShow(req,res,req.params.id).then(response =>{
     res.send(response);
   })
 });
@@ -171,7 +220,7 @@ app.get('/api/favorites', (req, res) => {
           let key = snap.key;
           let val = snap.val();
           if(val.userid == req.query.user_id)
-            allfavoritesPromise = [...allfavoritesPromise,getShow(val.showid,false)];
+            allfavoritesPromise = [...allfavoritesPromise,getShow(req,res,val.showid,false,key)];
         })
         return Promise.all([...allfavoritesPromise]);
       }).then((responses)=>{
@@ -220,6 +269,42 @@ app.get('/api/favorites', (req, res) => {
 
 
 });
+
+app.post('/api/favorites', (req, res, body) => {
+  const showid = req.body.showid;
+  const userid = req.body.userid;
+  const ref = favorites.push();
+  const key = ref.key;
+  favorites.orderByChild('showid').equalTo(showid).once('value').then((snapshot)=>{
+    let data = [];
+    snapshot.forEach((snap)=>{
+      let show = snap.val();
+      if(show.userid == userid)
+        data = [...data,snap.val()];
+
+    })
+    if(data.length > 0){
+      return new Promise((resolve,reject)=>{
+        resolve({success:'already exist'})
+      })
+    }
+    return ref.set(req.body);
+
+  }).then((response)=>{
+    if(response && response['success'])
+      res.send(response['success']);
+    else
+    res.send({showid,userid,key});
+  })
+})
+
+app.delete('/api/favorites/:key', (req, res, body) => {
+  let updates = {};
+  updates[`/${req.params.key}`] = null;
+  favorites.update(updates).then((snap)=>{
+    res.send({sucess:true});
+  })
+})
 
 app.get('/api/schedule', (req, res) => {
     request({
@@ -273,6 +358,7 @@ app.get('/api/schedule', (req, res) => {
 
     }).then(responses =>{
       let allfavorites = [];
+      let allfavoritesObj = [];
       if(responses[2]){
         snapshot = responses[2];
         snapshot.forEach((snap,index)=>{
@@ -280,18 +366,25 @@ app.get('/api/schedule', (req, res) => {
           let key = snap.key;
           let val = snap.val();
           if(val.userid == req.query.user_id)
-            allfavorites = [...allfavorites,val.showid]
+            allfavorites = [...allfavorites,{showid:val.showid, key}]
         })
       }
       const favorites = responses[0].shows.reduce((acc,curr) =>{
-        if(allfavorites.indexOf(curr.show.id) >=0)
+        let isFavorite = allfavorites.findIndex((fav)=>{
+          return fav.showid == curr.show.id;
+        })
+        if(isFavorite >=0)
           return [...acc,curr];
 
         return [...acc];
       },[])
       responses[0].shows.forEach((show)=>{
-        if(allfavorites.indexOf(show.show.id) >=0){
+        let isFavorite = allfavorites.findIndex((fav)=>{
+          return fav.showid == show.show.id;
+        })
+        if(isFavorite >= 0){
           show.show.favorite = true;
+          show.show.favorite_key = allfavorites[isFavorite].key;
         }
       })
 

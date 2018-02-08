@@ -10,17 +10,25 @@ import IconButton from 'material-ui/IconButton';
 
 
 const ShowCard = props => {
-  const {show, overlay, nav} = props;
-  const {image, name, network, favorite} = show;
+  const {show, overlay, nav, user} = props;
+  const {image, name, network, favorite, favorite_key} = show;
   this.handleClick = (e)=>{
     e.stopPropagation();
+    console.log(user);
+    if(user)
+      props.addToFavorites(show,user.uid);
+  }
+  this.handleRemoveClick = (e)=>{
+    e.stopPropagation();
+    if(user && favorite_key)
+      props.removeFromFavorites(show,user.uid,favorite_key);
   }
   return (
     <div className="show-card-container">
       {
         nav ? <nav className='show-nav'>
           {
-            favorite ? <IconButton tooltip="Unfavorite show" onClick={this.handleClick}>
+            favorite ? <IconButton tooltip="Unfavorite show" onClick={this.handleRemoveClick}>
               <FontIcon className="material-icons" color={'#fff'}>favorite</FontIcon>
             </IconButton>:<IconButton tooltip="Favorite show" onClick={this.handleClick}>
               <FontIcon className="material-icons" color={'#fff'}>favorite_border</FontIcon>
@@ -64,7 +72,9 @@ ShowCard.propTypes = {
   show: PropTypes.object.isRequired,
   overlay:PropTypes.bool,
   nav:PropTypes.bool,
-  favoriteShow:PropTypes.func,
+  addToFavorites:PropTypes.func,
+  removeFromFavorites:PropTypes.func,
+  user:PropTypes.object,
 };
 
 

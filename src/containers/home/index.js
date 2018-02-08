@@ -2,7 +2,7 @@ import React from 'react'
 import { push } from 'react-router-redux'
 import { bindActionCreators } from 'redux'
 import {connectWithLifecycle} from 'react-lifecycle-component/lib'
-import {getSchedule, setFilter, setDate} from './modules/home'
+import {getSchedule, setFilter, setDate, addToFavorites, removeFromFavorites} from './modules/home'
 import {setBackGroundColor, setBackGroundImage, changefontcolor, setTimeOfDay,changeColorVar} from '../app/modules/app'
 import moment from 'moment'
 import ShowCard from '../../components/show-card'
@@ -139,7 +139,7 @@ const Home = props => {
           <div className="favorites">
           {
             favorites.map((show)=>{
-              return <div onClick={()=>props.changePage(show.show.id)} key={show.id}><ShowCard show={show.show} /></div>
+              return <div onClick={()=>props.changePage(show.show.id)} key={`${show.show.favorite_key}`}><ShowCard show={show.show} /></div>
             })
           }
           </div>
@@ -185,7 +185,7 @@ const Home = props => {
       <div className="home-content" style={{opacity:loading? 0:1, pointerEvents:loading? 'none':'auto'}}>
         {
           shows.map((show)=>{
-            return <div onClick={()=>props.changePage(show.show.id)} key={show.id}><ShowCard show={show.show} overlay={true}  nav={true}/></div>
+            return <div onClick={()=>props.changePage(show.show.id)} key={show.id}><ShowCard removeFromFavorites={props.removeFromFavorites} addToFavorites={props.addToFavorites} show={show.show} overlay={true}  nav={true} user={user}/></div>
           })
         }
       </div>
@@ -235,6 +235,8 @@ const mapDispatchToProps = dispatch => ({
   setBackGroundImage,
   setFilter,
   setDate,
+  addToFavorites,
+  removeFromFavorites,
   changePage:(id)=> push(`/shows/${id}`),
 }, dispatch)})
 
