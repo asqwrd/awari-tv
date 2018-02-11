@@ -52,6 +52,14 @@ html,body, body > div{
 
     .search{
       background-color: rgba(255,255,255,.5);
+      &.mobile{
+        display:none;
+        position:absolute;
+        width: calc(100% - 20px);
+        margin:0 auto;
+        left:0;
+        right:0;
+      }
       hr{
         display: none;
       }
@@ -135,6 +143,49 @@ html,body, body > div{
       width: 60vw;
       pointer-events: none;
     }
-
+  }
+  .header-nav{
+    &.mobile{
+      display: none;
+      position:absolute;
+      right:10px;
+      margin:auto;
+      top:0;
+      bottom:0;
+      align-items: center;
+    }
+  }
+  @media only screen
+  and (max-device-width: 1023px){
+    .app-header{
+      padding:0 10px;
+      .logo-container{
+        display:none;
+      }
+      .header-nav{
+        display: none;
+        &.mobile{
+          display: flex;
+        }
+      }
+      .search{
+        &.desktop{
+          display:none;
+        }
+        &.mobile{
+          display: block;
+          position: relative;
+          .logo{
+            position: absolute;
+            top:0;
+            bottom:0;
+            margin:auto 10px;
+          }
+        }
+      }
+      .logo{
+        width:80px;
+      }
+    }
   }
 }

@@ -116,37 +116,73 @@ const Shows = (props) => {
 
       </nav>
       <div className="show-content">
-        <Paper style={{height:"100%", width:'100%', maxWidth:"1200px", backgroundColor:'var(--muted-color)',minHeight:'200px', display:'flex',alignItems:'center'}}>
-          {
-            episodes.length === 0 ? <h1 className="no-eps">No episodes</h1>:
-            <Table fixedHeader={true}   style={{backgroundColor:'var(--muted-color)', color:'#fff'}}>
-               <TableHeader
-                  displaySelectAll={false}
-                  adjustForCheckbox={false}
-                  style={{backgroundColor:'transparent'}}
-               >
-               <TableRow style={{color:'var(muted-font-color)'}} displayBorder={false}>
-                 <TableHeaderColumn style={{width:'100px',color:'var(muted-font-color)'}}>#</TableHeaderColumn>
-                 <TableHeaderColumn style={{textAlign: 'left', color:'var(muted-font-color)'}}>Episodes</TableHeaderColumn>
-                 <TableHeaderColumn style={{textAlign: 'center', color:'var(muted-font-color)'}}>Date</TableHeaderColumn>
-               </TableRow>
-             </TableHeader>
-             <TableBody displayRowCheckbox={false}>
-                {
-                  episodes.map((eps)=>{
-                    return (
-                      <TableRow key={eps.id} style={{color:'var(muted-font-color)'}} displayBorder={false}>
-                        <TableRowColumn style={{width:'100px'}}>{eps.number}</TableRowColumn>
-                        <TableRowColumn>{eps.name}</TableRowColumn>
-                        <TableRowColumn style={{textAlign: 'center'}}>{eps.airstamp ? moment(eps.airstamp).format('MMMM Do, YYYY') : 'No air date yet'}</TableRowColumn>
-                      </TableRow>
-                    )
-                  })
-                }
-              </TableBody>
-            </Table>
-          }
-        </Paper>
+        <div className="desktop-table">
+          <Paper style={{height:"100%", width:'100%', maxWidth:"1200px", backgroundColor:'var(--muted-color)',minHeight:'200px', display:'flex',alignItems:'center'}}>
+            {
+              episodes.length === 0 ? <h1 className="no-eps">No episodes</h1>:
+              <Table fixedHeader={true}   style={{backgroundColor:'var(--muted-color)', color:'#fff'}}>
+                 <TableHeader
+                    displaySelectAll={false}
+                    adjustForCheckbox={false}
+                    style={{backgroundColor:'transparent'}}
+                 >
+                 <TableRow style={{color:'var(muted-font-color)'}} displayBorder={false}>
+                   <TableHeaderColumn style={{width:'100px',color:'var(muted-font-color)'}}>#</TableHeaderColumn>
+                   <TableHeaderColumn style={{textAlign: 'left', color:'var(muted-font-color)'}}>Episodes</TableHeaderColumn>
+                   <TableHeaderColumn style={{textAlign: 'center', color:'var(muted-font-color)'}}>Date</TableHeaderColumn>
+                 </TableRow>
+               </TableHeader>
+               <TableBody displayRowCheckbox={false}>
+                  {
+                    episodes.map((eps)=>{
+                      return (
+                        <TableRow key={eps.id} style={{color:'var(muted-font-color)'}} displayBorder={false}>
+                          <TableRowColumn style={{width:'100px'}}>{eps.number}</TableRowColumn>
+                          <TableRowColumn>{eps.name}</TableRowColumn>
+                          <TableRowColumn style={{textAlign: 'center'}}>{eps.airstamp ? moment(eps.airstamp).format('MMMM Do, YYYY') : 'No air date yet'}</TableRowColumn>
+                        </TableRow>
+                      )
+                    })
+                  }
+                </TableBody>
+              </Table>
+            }
+          </Paper>
+        </div>
+        <div className="mobile-table">
+          <Paper style={{height:"100%", width:'100%', maxWidth:"1200px", backgroundColor:'var(--muted-color)',minHeight:'200px', display:'flex',alignItems:'center'}}>
+            {
+              episodes.length === 0 ? <h1 className="no-eps">No episodes</h1>:
+              <Table fixedHeader={true}   style={{backgroundColor:'var(--muted-color)', color:'#fff',fontSize:'15px'}}>
+                 <TableHeader
+                    displaySelectAll={false}
+                    adjustForCheckbox={false}
+                    style={{backgroundColor:'transparent'}}
+                 >
+                 <TableRow style={{color:'var(muted-font-color)',fontSize:'15px'}} displayBorder={false}>
+                   <TableHeaderColumn style={{width:'50px',color:'var(muted-font-color)', fontSize:'15px'}}>#</TableHeaderColumn>
+                   <TableHeaderColumn style={{textAlign: 'left', color:'var(muted-font-color)',fontSize:'15px'}}>Episodes</TableHeaderColumn>
+                 </TableRow>
+               </TableHeader>
+               <TableBody displayRowCheckbox={false}>
+                  {
+                    episodes.map((eps)=>{
+                      return (
+                        <TableRow key={eps.id} style={{color:'var(muted-font-color)',fontSize:'15px'}} displayBorder={false}>
+                          <TableRowColumn style={{width:'50px',fontSize:'15px'}}>{eps.number}</TableRowColumn>
+                          <TableRowColumn style={{fontSize:'15px'}}>
+                            {eps.name}
+                            <span className="mobile-date">{eps.airstamp ? moment(eps.airstamp).format('MMMM Do, YYYY') : 'No air date yet'}</span>
+                          </TableRowColumn>
+                        </TableRow>
+                      )
+                    })
+                  }
+                </TableBody>
+              </Table>
+            }
+          </Paper>
+        </div>
       </div>
     </div>
   )

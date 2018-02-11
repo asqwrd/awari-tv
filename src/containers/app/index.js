@@ -24,6 +24,7 @@ import {setBackGroundColor,
   logout,
   onAuthStateChanged,
   togglePopover,
+  toggleMobilePopover,
 } from './modules/app'
 import logoLight from './images/logo-light.svg'
 import AutoComplete from 'material-ui/AutoComplete';
@@ -31,6 +32,8 @@ import Popover from 'material-ui/Popover';
 import Menu from 'material-ui/Menu';
 import MenuItem from 'material-ui/MenuItem';
 import Avatar from 'material-ui/Avatar';
+import FontIcon from 'material-ui/FontIcon';
+import IconButton from 'material-ui/IconButton';
 
 
 
@@ -82,13 +85,21 @@ const App = (props) =>{
     props.togglePopover()
   }
 
+  this.handleClickMobile = (event)=>{
+    event.preventDefault();
+    props.toggleMobilePopover()
+  }
+  this.handleRequestMobileClose = ()=>{
+    props.toggleMobilePopover()
+  }
+
   return (
   <MuiThemeProvider muiTheme={muiTheme}>
     <div className="app">
       <div className="app-body" ref={(elm)=>{this.appBody = elm; props.setBody(this.appBody)}} style={{backgroundColor}}>
         <header className="app-header"  ref={(elm)=>this.appHeader = elm}>
           <div className="logo-container"><NavLink to='/'><img className="logo" src={logoLight} alt="logo"/></NavLink></div>
-          <div className="search">
+          <div className="search desktop">
             <AutoComplete
               hintText="Search"
               searchText={props.searchtext}
@@ -99,6 +110,51 @@ const App = (props) =>{
               openOnFocus={true}
               filter={AutoComplete.fuzzyFilter}
               fullWidth={true}
+            />
+          </div>
+          <div className="search mobile">
+            <img className="logo" src={logoLight} alt="logo" ref={(elm)=>this.logoMobile = elm}/>
+            <nav className="header-nav mobile">
+            <NavLink to='/'>
+              <IconButton>
+               <FontIcon className="material-icons">home</FontIcon>
+             </IconButton>
+            </NavLink>
+            {user ?
+              <div>
+                <div className="avatar-container" ref={(elm)=>this.avatarMobile = elm}>
+                  <Avatar src={user.photoURL}   onClick={this.handleClickMobile} size={32}/>
+                </div>
+                <Popover
+                  open={props.login_open_mobile}
+                  anchorEl={this.avatarMobile}
+                  anchorOrigin={{horizontal: 'right', vertical: 'bottom'}}
+                  targetOrigin={{horizontal: 'right', vertical: 'top'}}
+                  onRequestClose={this.handleRequestMobileClose}
+                >
+                  <Menu>
+                    <MenuItem primaryText="Favorites" onClick={()=>{props.changePage('/favorites'); props.togglePopover()}}/>
+                    <MenuItem primaryText="Sign out" onClick={props.logout} />
+                  </Menu>
+                </Popover>
+              </div>
+              :
+              <button onClick={props.login}>Log In</button>
+            }
+            </nav>
+            <AutoComplete
+              hintText=""
+              searchText={props.searchtext}
+              onUpdateInput={this.handleUpdateInput}
+              onNewRequest={this.handleNewRequest}
+              dataSource={props.searchResults}
+              dataSourceConfig={{text:'name', value:'id'}}
+              openOnFocus={true}
+              filter={AutoComplete.fuzzyFilter}
+              fullWidth={true}
+              style={{width:'calc(100% - 80px)'}}
+              onFocus={()=>this.logoMobile.style.opacity = 0}
+              name='auto-complete-mobile'
             />
           </div>
           <nav className="header-nav">
@@ -157,6 +213,7 @@ const mapStateToProps = (state, ownProps) => ({
   searchtext:state.app.searchtext,
   user:state.app.user,
   login_open:state.app.login_open,
+  login_open_mobile:state.app.login_open_mobile,
 
 })
 
@@ -195,6 +252,7 @@ const mapDispatchToProps = dispatch => ({
     login,
     logout,
     togglePopover,
+    toggleMobilePopover,
     changePage:(page)=> push(page),
 }, dispatch)})
 

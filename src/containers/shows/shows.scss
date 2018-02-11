@@ -127,4 +127,47 @@
       width:100%;
       text-align: center;
   }
+  .mobile-table{
+    display:none;
+  }
+  .mobile-date{
+    display: block;
+    color:#aaa;
+    font-size: 13px;
+  }
+
+}
+@media only screen
+and (max-device-width: 1023px){
+ .show-container{
+    margin-bottom:0;
+    .no-eps{
+      font-size: 18px;
+      padding:0 20px;
+    }
+    .desktop-table{
+      display: none;
+    }
+    .mobile-table{
+      display: block;
+    }
+    .show-header{
+      padding:30px 10px 10px;
+      .season-nav{
+        display:none;
+
+      }
+    }
+    .floating-nav{
+      opacity:0;
+      pointer-events: none;
+      &.show{
+        transform: translateX(-1000px);
+      }
+    }
+    .show-content{
+     padding:0;
+    }
+ }
+
 }

@@ -12,6 +12,7 @@ export const UPDATE_SEARCH_TEXT = 'UPDATE_SEARCH_TEXT'
 export const LOGIN = 'LOGIN'
 export const LOGOUT = 'LOGOUT'
 export const TOGGLE_POPOVER = 'TOGGLE_POPOVER'
+export const TOGGLE_MOBILE_POPOVER = 'TOGGLE_MOBILE_POPOVER'
 
 
 
@@ -90,6 +91,12 @@ export default (state = initialState, action) => {
         return {
           ...state,
           login_open: !state.login_open,
+        }
+
+      case TOGGLE_MOBILE_POPOVER:
+        return {
+          ...state,
+          login_open_mobile: !state.login_open_mobile,
         }
 
       case SET_BODY:
@@ -250,6 +257,14 @@ export const togglePopover = () =>{
   }
 }
 
+export const toggleMobilePopover = () =>{
+  return dispatch =>{
+    return dispatch({
+      type:TOGGLE_MOBILE_POPOVER,
+    })
+  }
+}
+
 export const favoriteShow = (showid)=>{
-  
+
 }
