@@ -154,6 +154,7 @@ const App = (props) =>{
               fullWidth={true}
               style={{width:'calc(100% - 80px)'}}
               onFocus={()=>this.logoMobile.style.opacity = 0}
+              onBlur={()=>this.logoMobile.style.opacity = 1}
               name='auto-complete-mobile'
             />
           </div>
