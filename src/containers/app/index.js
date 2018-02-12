@@ -133,13 +133,12 @@ const App = (props) =>{
                   onRequestClose={this.handleRequestMobileClose}
                 >
                   <Menu>
-                    <MenuItem primaryText="Favorites" onClick={()=>{props.changePage('/favorites'); props.togglePopover()}}/>
+                    <MenuItem primaryText="Favorites" onClick={()=>{props.changePage('/favorites'); props.toggleMobilePopover()}}/>
                     <MenuItem primaryText="Sign out" onClick={props.logout} />
                   </Menu>
                 </Popover>
               </div>
-              :
-              <button onClick={props.login}>Log In</button>
+              :<Avatar onClick={props.login} icon={<FontIcon className="material-icons">person</FontIcon>} />
             }
             </nav>
             <AutoComplete
@@ -177,8 +176,7 @@ const App = (props) =>{
                 </Menu>
               </Popover>
             </div>
-            :
-            <button onClick={props.login}>Log In</button>
+            :<Avatar onClick={props.login} icon={<FontIcon className="material-icons">person</FontIcon>} />
           }
           </nav>
         </header>

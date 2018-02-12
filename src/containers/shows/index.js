@@ -14,10 +14,9 @@ import NO_IMAGE from '../../containers/app/images/no-image.png';
 import Avatar from 'material-ui/Avatar';
 import FontIcon from 'material-ui/FontIcon';
 import IconButton from 'material-ui/IconButton';
-import {BottomNavigation, BottomNavigationItem} from 'material-ui/BottomNavigation';
 import IconMenu from 'material-ui/IconMenu';
-import NavigationExpandMoreIcon from 'material-ui/svg-icons/navigation/expand-more';
 import MenuItem from 'material-ui/MenuItem';
+import {Toolbar, ToolbarGroup} from 'material-ui/Toolbar';
 
 import {
   Table,
@@ -59,7 +58,7 @@ const Shows = (props) => {
   this.scrollBody.addEventListener('scroll', this.handleScroll,true)
 
   const {_embedded, favorite } = show;
-  const moreIcon = <FontIcon className="material-icons">more_vert</FontIcon>;
+  const moreIcon = <FontIcon className="material-icons">more_horiz</FontIcon>;
   if(time_of_day === 'morning'){
     this.day_bg = MORNING;
   }else if(time_of_day === 'midday'){
@@ -189,48 +188,42 @@ const Shows = (props) => {
           </Paper>
         </div>
       </div>
-        <Paper zDepth={2} style={{position:'fixed',bottom:0, zIndex:100, width:'100%'}}>
-          <BottomNavigation style={{backgroundColor:props.appBackground,color:'var(--accent-color)', alignItems:'center'}}>
-            {
-              show.seasons.length < 6 ? show.seasons.map((season, index)=>{
-                  return <BottomNavigationItem
-                  label='Season'
-                  onClick={() => props.getSeason(season)}
-                  key={index}
-                  icon={<span>{season.number}</span>}
-                  style={{color:'var(--accent-color)'}}/>
-
-              }):show.seasons.map((season, index)=>{
-                if(index < 4){
-                  return <BottomNavigationItem
-                  label='Season'
-                  onClick={() => props.getSeason(season)}
-                  key={index}
-                  icon={<span>{season.number}</span>}
-                  style={{color:'var(--accent-color)'}}/>
-                }
-              })
-            }
-            {show.seasons && show.seasons.length >= 6 ? <BottomNavigationItem icon={
-              <IconMenu
-                anchorOrigin={{horizontal: 'left', vertical: 'top'}}
-                targetOrigin={{horizontal: 'left', vertical: 'bottom'}}
-                menuStyle={{maxHeight:'200px'}}
-                iconButtonElement={
-                  <IconButton touch={true}>
-                    {moreIcon}
-                  </IconButton>
-                }
-              >
-                {
-                  show.seasons.map((season, index)=>{
-                    if(index >= 4){
-                      return <MenuItem primaryText={`Season ${season.number}`} onClick={()=>props.getSeason(season)} key={index}/>
-                    }
-                  })
-                }
-            </IconMenu>} style={{color:'var(--accent-color)'}}/>:''}
-          </BottomNavigation>
+        <Paper zDepth={2} style={{position:'fixed',bottom:0, zIndex:100, width:'100%',backgroundColor:'var(--muted-color)',color:'var(--muted-font-color)', padding:'0 20px'}}>
+          <Toolbar style={{justifyContent:'center', padding:0}}>
+            <ToolbarGroup firstChild={true} style={{justifyContent:'center', margin:0, width:'100%'}}>
+              {
+                show.seasons.length < 6 ? show.seasons.map((season, index)=>{
+                    return <div className={`season-toolbar ${active_season.number === season.number ? 'active':''}`} onClick={() => props.getSeason(season)} key={index}>{season.number}<p className="season-label">Season</p></div>
+                }):show.seasons.map((season, index)=>{
+                  if(index < 4){
+                    return <div className={`season-toolbar ${active_season.number === season.number ? 'active':''}`} onClick={() => props.getSeason(season)} key={index}>{season.number}<p className="season-label">Season</p></div>
+                  }
+                  return '';
+                })
+              }
+              {show.seasons && show.seasons.length >= 6 ? <div className="season-toolbar">
+                <IconMenu
+                  anchorOrigin={{horizontal: 'left', vertical: 'top'}}
+                  targetOrigin={{horizontal: 'left', vertical: 'bottom'}}
+                  menuStyle={{maxHeight:'300px'}}
+                  iconStyle={{color:'var(--muted-font-color)'}}
+                  iconButtonElement={
+                    <IconButton touch={true}>
+                      {moreIcon}
+                    </IconButton>
+                  }
+                >
+                  {
+                    show.seasons.map((season, index)=>{
+                      if(index >= 4){
+                        return <MenuItem primaryText={<span className={`season-menu-label ${active_season.number === season.number ? 'active':''}`}>{`Season ${season.number}`}</span>} onClick={()=>props.getSeason(season)} key={index}/>
+                      }
+                      return '';
+                    })
+                  }
+                </IconMenu></div>:''}
+            </ToolbarGroup>
+          </Toolbar>
         </Paper>
     </div>
   )
@@ -246,6 +239,7 @@ const setColors = ()=>{
     changefontcolor('--accent-color',this.backgroundColor);
     changefontcolor('--muted-font-color',this.backgroundColor2);
     changeColorVar('--muted-color',this.backgroundColor2);
+    changeColorVar('--main-color',this.backgroundColor);
   }
 
 }

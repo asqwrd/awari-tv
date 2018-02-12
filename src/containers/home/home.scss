@@ -4,6 +4,15 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
+  .date{
+    color: var(--accent-color);
+    font-weight: 400;
+    margin:0;
+    display: inline-block;
+    input{
+      color:var(--accent-color) !important;
+    }
+  }
   .floating-filter{
     width:150px;
     top:80px;
@@ -80,15 +89,6 @@
         }
       }
     }
-    .date{
-      color: var(--accent-color);
-      font-weight: 400;
-      margin:0;
-      display: inline-block;
-      input{
-        color:var(--accent-color) !important;
-      }
-    }
     .day{
       font-size: 15px;
       color:var(--accent-color);
@@ -144,4 +144,51 @@
     -moz-transition:opacity .5s ease;
     transition:opacity .5s ease;
   }
+
+  .tool-bar{
+    position:fixed;
+    width:100%;
+    left:0;
+    bottom:0;
+    z-index: 100;
+  }
+  .mobile{
+    display: none;
+  }
+
+}
+
+@media only screen
+and (max-device-width: 1023px){
+ .home-container{
+    margin-bottom:0;
+    .mobile{
+      display:block;
+    }
+    .date{
+      color:var(--muted-font-color);
+      input{
+        color: var(--muted-font-color) !important;
+      }
+    }
+    .home-header{
+      display: none;
+    }
+    .floating-filter{
+      display: none;
+    }
+    .filter-text-container{
+      padding:0 20px;
+    }
+    .favorites-container{
+      .filter-text-container{
+        padding:0 20px;
+      }
+    }
+    .home-content,.favorites{
+      padding:0 20px 60px;
+      grid-gap:10px;
+    }
+ }
+
 }

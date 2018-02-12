@@ -135,7 +135,30 @@
     color:#aaa;
     font-size: 13px;
   }
+  .season-toolbar{
+    color:var(--muted-font-color);
+    text-align: center;
+    margin: 0 12.5px;
+    width: calc(100% / 5);
+    &.active{
+      color:var(--main-color);
+      .season-label{
+        color:var(--main-color);
+      }
+    }
+  }
 
+  .season-label{
+    margin:0;
+    color:var(--muted-font-color);
+    font-weight: 300;
+    font-size: 14px;
+  }
+}
+.season-menu-label{
+  &.active{
+    color:var(--main-color);
+  }
 }
 @media only screen
 and (max-device-width: 1023px){

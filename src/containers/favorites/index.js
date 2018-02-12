@@ -14,7 +14,7 @@ import RefreshIndicator from 'material-ui/RefreshIndicator';
 
 
 const Favorites = props => {
-  const {shows, backgroundColor, time_of_day, body, loading,backgroundColor2, user} = props;
+  const {shows, backgroundColor, time_of_day, body, loading,backgroundColor2, user, appBackground} = props;
   this.backgroundColor = backgroundColor;
   this.backgroundColor2 = backgroundColor2;
   this.setBackGroundColor = props.setBackGroundColor;
@@ -43,7 +43,7 @@ const Favorites = props => {
         size={50}
         left={50}
         top={50}
-        loadingColor={'var(--muted-color)'}
+        loadingColor={appBackground}
         status={loading ? 'loading':'hide'}
         style={{position:'fixed',zIndex:1000, transform:'translate(-50%,-50%)', left:'50%', top:'50%'}}
       />
@@ -85,6 +85,7 @@ const mapStateToProps = state => ({
   backgroundColor:state.favorites.color,
   backgroundColor2:state.favorites.muted_color,
   body: state.app.body,
+  appBackground: state.app.backgroundColor,
   loading: state.favorites.loading,
   user:state.app.user,
 })
