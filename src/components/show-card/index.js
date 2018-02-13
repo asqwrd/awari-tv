@@ -28,9 +28,9 @@ const ShowCard = props => {
       {
         nav ? <nav className='show-nav'>
           {
-            favorite ? <IconButton tooltip="Unfavorite show" onClick={this.handleRemoveClick}>
+            favorite ? <IconButton touch={true} tooltip="Unfavorite show" onClick={this.handleRemoveClick}>
               <FontIcon className="material-icons" color={'#fff'}>favorite</FontIcon>
-            </IconButton>:<IconButton tooltip="Favorite show" onClick={this.handleClick}>
+            </IconButton>:<IconButton touch={true} tooltip="Favorite show" onClick={this.handleClick}>
               <FontIcon className="material-icons" color={'#fff'}>favorite_border</FontIcon>
             </IconButton>
           }

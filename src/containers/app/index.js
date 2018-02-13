@@ -138,7 +138,7 @@ const App = (props) =>{
                   </Menu>
                 </Popover>
               </div>
-              :<Avatar onClick={props.login} icon={<FontIcon className="material-icons">person</FontIcon>} />
+              :<Avatar onClick={props.login} icon={<FontIcon className="material-icons">person</FontIcon>} size={32}/>
             }
             </nav>
             <AutoComplete

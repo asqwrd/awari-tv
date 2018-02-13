@@ -82,11 +82,11 @@ const Shows = (props) => {
       />
       <header className="show-header" style={{opacity:loading? 0.3:1, pointerEvents:loading? 'none':'auto'}}>
         <div className="show-profile">
-          {favorite ? <div className='icon'><IconButton tooltip="Unfavorite show" onClick={()=>props.removeFromFavorites(show.favorite_key)}>
+          {favorite && user ? <div className='icon'><IconButton touch={true} tooltip="Unfavorite show" onClick={()=>props.removeFromFavorites(show.favorite_key)}>
             <FontIcon className="material-icons" color={'#fff'}>favorite</FontIcon>
-          </IconButton></div>:<div className='icon'><IconButton tooltip="Favorite show" onClick={()=> props.addToFavorites(show,user.uid)}>
+          </IconButton></div>: user ? <div className='icon'><IconButton touch={true} tooltip="Favorite show" onClick={()=> props.addToFavorites(show,user.uid)}>
             <FontIcon className="material-icons" color={'#fff'}>favorite_border</FontIcon>
-          </IconButton></div>}
+          </IconButton></div>:''}
           <Avatar src={show.image && show.image.original ? show.image.original: NO_IMAGE} size={100}/>
         </div>
         <h1 className="show-name">{show.name}</h1>
