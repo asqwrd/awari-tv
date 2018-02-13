@@ -80,7 +80,7 @@ const Shows = (props) => {
         status={loading ? 'loading':'hide'}
         style={{position:'fixed',zIndex:1000, transform:'translate(-50%,-50%)', left:'50%', top:'50%'}}
       />
-      <header className="show-header">
+      <header className="show-header" style={{opacity:loading? 0.3:1, pointerEvents:loading? 'none':'auto'}}>
         <div className="show-profile">
           {favorite ? <div className='icon'><IconButton tooltip="Unfavorite show" onClick={()=>props.removeFromFavorites(show.favorite_key)}>
             <FontIcon className="material-icons" color={'#fff'}>favorite</FontIcon>
@@ -96,18 +96,20 @@ const Shows = (props) => {
         </div>
         <nav className='season-nav' ref={(elm)=>this.seasonNav = elm}>
           <h1 className="season-label">Seasons</h1>
+          <div className="seasons-wrapper">
           {
             show.seasons.map((season, index)=>{
               return <div onClick={()=>props.getSeason(season)} className={`season-number ${active_season.number === season.number ? 'active':''}`} key={season.id}>{season.number}</div>
             })
 
           }
+        </div>
         </nav>
       </header>
-      <nav className="floating-nav" ref={(elm)=>this.floatingNav = elm}>
+      <nav className="floating-nav" ref={(elm)=>this.floatingNav = elm} style={{opacity:loading? 0.3:1, pointerEvents:loading? 'none':'auto'}}>
         <Paper zDepth={1} style={{backgroundColor:'var(--muted-color)'}}>
           <List>
-          <Subheader className="season-label" style={{textAlign:'center',padding:'0',color:`${appBackground}`}}>Seasons</Subheader>
+          <Subheader className="season-label" style={{textAlign:'center',padding:'0 15px',color:`${appBackground}`}}>Seasons</Subheader>
 
           {
             show.seasons.map((season, index)=>{
@@ -119,12 +121,12 @@ const Shows = (props) => {
         </Paper>
 
       </nav>
-      <div className="show-content">
+      <div className="show-content" style={{opacity:loading? 0.3:1, pointerEvents:loading? 'none':'auto'}}>
         <div className="desktop-table">
           <Paper style={{height:"100%", width:'100%', maxWidth:"1200px", backgroundColor:'var(--muted-color)',minHeight:'200px', display:'flex',alignItems:'center'}}>
             {
               episodes.length === 0 ? <h1 className="no-eps">No episodes</h1>:
-              <Table fixedHeader={true}   style={{backgroundColor:'var(--muted-color)', color:'#fff'}}>
+              <Table fixedHeader={true}   style={{backgroundColor:'var(--muted-color)', color:'#fff'}} selectable={false}>
                  <TableHeader
                     displaySelectAll={false}
                     adjustForCheckbox={false}
@@ -153,11 +155,11 @@ const Shows = (props) => {
             }
           </Paper>
         </div>
-        <div className="mobile-table">
+        <div className="mobile-table" style={{opacity:loading? 0.3:1, pointerEvents:loading? 'none':'auto'}}>
           <Paper style={{height:"100%", width:'100%', maxWidth:"1200px", backgroundColor:'var(--muted-color)',minHeight:'200px', display:'flex',alignItems:'center'}}>
             {
               episodes.length === 0 ? <h1 className="no-eps">No episodes</h1>:
-              <Table fixedHeader={true}   style={{backgroundColor:'var(--muted-color)', color:'#fff',fontSize:'15px'}}>
+              <Table fixedHeader={true}   style={{backgroundColor:'var(--muted-color)', color:'#fff',fontSize:'15px'}} selectable={false}>
                  <TableHeader
                     displaySelectAll={false}
                     adjustForCheckbox={false}
@@ -188,6 +190,7 @@ const Shows = (props) => {
           </Paper>
         </div>
       </div>
+      <div className="tool-bar-mobile" style={{opacity:loading? 0.3:1, pointerEvents:loading? 'none':'auto'}}>
         <Paper zDepth={2} style={{position:'fixed',bottom:0, zIndex:100, width:'100%',backgroundColor:'var(--muted-color)',color:'var(--muted-font-color)', padding:'0 20px'}}>
           <Toolbar style={{justifyContent:'center', padding:0}}>
             <ToolbarGroup firstChild={true} style={{justifyContent:'center', margin:0, width:'100%'}}>
@@ -225,6 +228,7 @@ const Shows = (props) => {
             </ToolbarGroup>
           </Toolbar>
         </Paper>
+      </div>
     </div>
   )
 

@@ -14,9 +14,9 @@
     }
   }
   .floating-filter{
-    width:150px;
+    width:90px;
     top:80px;
-    right:30px;
+    right:5px;
     position: fixed;
     -webkit-transform: translateX(500px);
     -moz-transform: translateX(500px);
@@ -31,6 +31,9 @@
     }
     input{
       color:var(--muted-font-color) !important;
+    }
+    .float-date{
+      padding:0 10px;
     }
   }
   .filter-text-container{

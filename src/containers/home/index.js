@@ -86,7 +86,7 @@ const Home = props => {
       value={time.value}
       primaryText={time.formatted}
       key={time.value}
-      style={{color:'var(--muted-font-color)'}}
+      style={{color:'var(--muted-font-color)', textAlign:'center', fontSize:'14px'}}
       onClick={()=>this.handleChange(null,time.value)}
       />];
   },[])
@@ -158,29 +158,26 @@ const Home = props => {
             </FloatingActionButton>
         </nav>
       </div>
-      <nav className="floating-filter" ref={(elm)=>this.floatingNav = elm}>
+      <nav className="floating-filter" ref={(elm)=>this.floatingNav = elm} style={{opacity:loading? 0.3:1, pointerEvents:loading? 'none':'auto'}}>
         <Paper zDepth={1} style={{backgroundColor:'var(--muted-color)'}}>
-          <List>
-            <ListItem>
-              <DatePicker
-                container="inline"
-                autoOk={true}
-                name="date-picke-float"
-                onChange={this.handleDateChange}
-                value={date}
-                textFieldStyle={{color:'var(--muted-font-color)', fontSize:'18px', fontWeight:'400', width:'100%'}}
-                style={{color:'var(--muted-font-color)', fontSize:'18px', fontWeight:'400' ,width:"100%"}}
-                formatDate={(date)=>moment(date).format('MM/DD/YYYY')}
-                />
-            </ListItem>
-            <ListItem
-              primaryText="Airtimes"
-              initiallyOpen={true}
-              nestedItems={timesList}
-              autoGenerateNestedIndicator={false}
-              style={{color:'var(--muted-font-color)'}}
-              nestedListStyle={{maxHeight:'300px',overflow:'auto', color:'var(--muted-font-color)'}}
+          <div className="float-date">
+            <DatePicker
+              container="inline"
+              autoOk={true}
+              name="date-picke-float"
+              onChange={this.handleDateChange}
+              value={date}
+              textFieldStyle={{color:'var(--muted-font-color)', fontSize:'14px', fontWeight:'400', width:'100%'}}
+              style={{color:'var(--muted-font-color)', fontSize:'14px', fontWeight:'400' ,width:"100%"}}
+              formatDate={(date)=>moment(date).format('MM/DD/YYYY')}
             />
+          </div>
+          <List style={{maxHeight:'300px',overflow:'auto', color:'var(--muted-font-color)'}}>
+            {
+              timesList.map((time)=>{
+                return time;
+              })
+            }
           </List>
         </Paper>
       </nav>

@@ -232,6 +232,9 @@ const attachEvents = ()=>{
       this.html.style.setProperty('--header-background', 'transparent');
     }
   })
+  window.addEventListener('resize',(e)=>{
+    this.appHeader.style.width = `${this.mainContent.getBoundingClientRect().width}px`;
+  })
   this.onAuthStateChanged();
 }
 

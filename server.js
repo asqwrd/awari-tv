@@ -4,6 +4,7 @@ const moment = require('moment');
 const Vibrant = require('node-vibrant')
 const firebase = require('firebase');
 const admin = require('firebase-admin');
+const path = require('path');
 
 const bodyParser = require('body-parser')
 
@@ -27,6 +28,23 @@ app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization, Cache-Control");
   next();
 });
+
+app.use(express.static(path.join(__dirname, 'build')));
+
+app.get('/', function (req, res) {
+   res.sendFile(path.join(__dirname, 'build', 'index.html'));
+ });
+app.get('/search/**', function (req, res) {
+  res.sendFile(path.join(__dirname, 'build', 'index.html'));
+});
+app.get('/shows/**', function (req, res) {
+   res.sendFile(path.join(__dirname, 'build', 'index.html'));
+ });
+app.get('/favorites', function (req, res) {
+  res.sendFile(path.join(__dirname, 'build', 'index.html'));
+});
+
+
 
 const getShow = (req,res,id,addEmbed=true,key)=>{
   let embed = '';
@@ -125,12 +143,10 @@ app.get('/api/auth', (req,res)=>{
 
 
 app.get('/api/search/shows', (req, res) => {
-  console.log(req.query.q);
     request({
       method: 'GET',
       uri: `http://api.tvmaze.com/search/shows?q=${req.query.q}`,
     }).then((response)=>{
-      //console.log(response);
       response = JSON.parse(response);
       const shows = response.reduce((acc,curr)=>{
         return [...acc,curr.show]
@@ -144,7 +160,6 @@ app.get('/api/search/shows/full', (req, res) => {
       method: 'GET',
       uri: `http://api.tvmaze.com/search/shows?q=${req.query.q}`,
     }).then((response)=>{
-      //console.log(response);
       response = JSON.parse(response);
       const shows = response.reduce((acc,curr)=>{
         return [...acc,curr.show]
