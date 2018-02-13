@@ -10,7 +10,7 @@ export const REMOVE_FAVORITE = 'REMOVE_FAVORITE'
 
 const SEARCH_FAVORITES_API = `//${window.location.hostname}:${window.location.port}/api/favorites`;
 
-const SEARCH_API = `//${window.location.hostname}:3002/api/search/shows/full`;
+const SEARCH_API = `//${window.location.hostname}:${window.location.port}/api/search/shows/full`;
 
 const initialState = {
   shows: [],
