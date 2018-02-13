@@ -6,8 +6,8 @@ export const GET_SCHEDULE = 'GET_SCHEDULE'
 export const SET_FILTER = 'SET_FILTER'
 export const SET_DATE = 'SET_DATE'
 export const LOADING_API = 'LOADING_API'
-export const ADD_FAVORITE = 'ADD_FAVORITE'
-export const REMOVE_FAVORITE = 'REMOVE_FAVORITE'
+export const ADD_FAVORITE_HOME = 'ADD_FAVORITE_HOME'
+export const REMOVE_FAVORITE_HOME = 'REMOVE_FAVORITE_HOME'
 
 
 
@@ -44,7 +44,7 @@ export default (state = initialState, action) => {
         filter: action.filter
       }
 
-    case ADD_FAVORITE:
+    case ADD_FAVORITE_HOME:
       return{
         ...state,
         shows: state.shows.reduce((acc,curr)=>{
@@ -58,7 +58,7 @@ export default (state = initialState, action) => {
         favorites: [...state.favorites,{show:action.show}],
       }
 
-    case REMOVE_FAVORITE:
+    case REMOVE_FAVORITE_HOME:
       return{
         ...state,
         shows: state.shows.reduce((acc,curr)=>{
@@ -133,7 +133,7 @@ export const addToFavorites = (show,userid)=>{
     .then((response)=>{
       const key = response.key;
       dispatch({
-        type: ADD_FAVORITE,
+        type: ADD_FAVORITE_HOME,
         show,
         key,
       })
@@ -152,7 +152,7 @@ export const removeFromFavorites = (show,userid,key)=>{
     .then(response => response.json())
     .then((response)=>{
       dispatch({
-        type: REMOVE_FAVORITE,
+        type: REMOVE_FAVORITE_HOME,
         show
       })
     })

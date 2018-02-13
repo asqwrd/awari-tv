@@ -77,6 +77,7 @@ const Shows = (props) => {
         left={50}
         top={50}
         loadingColor={`${appBackground}`}
+        className={loading ? '':'hide'}
         status={loading ? 'loading':'hide'}
         style={{position:'fixed',zIndex:1000, transform:'translate(-50%,-50%)', left:'50%', top:'50%'}}
       />

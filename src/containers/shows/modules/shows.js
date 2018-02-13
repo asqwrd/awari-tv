@@ -3,8 +3,8 @@ import { auth } from '../../../firebase.js';
 export const GET_SHOW = 'GET_SHOW'
 export const GET_SEASON = 'GET_SEASON'
 export const LOADING_API = 'LOADING_API'
-export const ADD_FAVORITE = 'ADD_FAVORITE'
-export const REMOVE_FAVORITE = 'REMOVE_FAVORITE'
+export const ADD_FAVORITE_SHOW = 'ADD_FAVORITE'
+export const REMOVE_FAVORITE_SHOW = 'REMOVE_FAVORITE_SHOW'
 
 
 const SHOW_API = `//${window.location.hostname}:${window.location.port}/api/shows`;
@@ -32,13 +32,13 @@ export default (state = initialState, action) => {
         loading:false,
       }
 
-      case ADD_FAVORITE:
+      case ADD_FAVORITE_SHOW:
         return {
           ...state,
           show: {...state.show,favorite_key:action.key,favorite:true}
         }
 
-      case REMOVE_FAVORITE:
+      case REMOVE_FAVORITE_SHOW:
         return {
           ...state,
           show: {...state.show,favorite_key:null,favorite:false}
@@ -114,7 +114,7 @@ export const addToFavorites = (show,userid)=>{
     .then((response)=>{
       const key = response.key;
       dispatch({
-        type: ADD_FAVORITE,
+        type: ADD_FAVORITE_SHOW,
         key,
       })
     })
@@ -133,7 +133,7 @@ export const removeFromFavorites = (key)=>{
     .then(response => response.json())
     .then((response)=>{
       dispatch({
-        type: REMOVE_FAVORITE
+        type: REMOVE_FAVORITE_SHOW
       })
     })
   }
