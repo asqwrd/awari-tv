@@ -16,8 +16,8 @@ export const TOGGLE_MOBILE_POPOVER = 'TOGGLE_MOBILE_POPOVER'
 
 
 
-const SEARCH_API = `//${window.location.hostname}:3002/api/search/shows`;
-const AUTH_API = `//${window.location.hostname}:3002/api/auth`;
+const SEARCH_API = `//${window.location.hostname}:${window.location.port}/api/search/shows`;
+const AUTH_API = `//${window.location.hostname}:${window.location.port}/api/auth`;
 
 const initialState = {
   backgroundColor: [255,255,255],

@@ -7,7 +7,7 @@ export const REMOVE_FAVORITE = 'REMOVE_FAVORITE'
 
 
 
-const FAVORITES_API = `//${window.location.hostname}:3002/api/favorites`;
+const FAVORITES_API = `//${window.location.hostname}:${window.location.port}/api/favorites`;
 
 const initialState = {
   shows: [],

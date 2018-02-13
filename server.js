@@ -5,6 +5,8 @@ const Vibrant = require('node-vibrant')
 const firebase = require('firebase');
 const admin = require('firebase-admin');
 const path = require('path');
+const nconf = require('nconf');
+
 
 const bodyParser = require('body-parser')
 
@@ -17,7 +19,7 @@ admin.initializeApp({
 
 const db = admin.database().ref();
 const favorites = db.child('favorites');
-
+const PORT = nconf.argv().get('port');
 
 
 const app = express();
@@ -408,7 +410,7 @@ app.get('/api/schedule', (req, res) => {
 });
 
 
-const server = app.listen(3002,'localhost',()=>{
+const server = app.listen(PORT,'localhost',()=>{
   const host = server.address().address;
   const port = server.address().port;
   console.log(host);

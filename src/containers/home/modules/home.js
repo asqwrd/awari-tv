@@ -11,8 +11,8 @@ export const REMOVE_FAVORITE = 'REMOVE_FAVORITE'
 
 
 
-const SCHEDULE_API = `//${window.location.hostname}:3002/api/schedule`;
-const SCHEDULE_FAVORITES_API = `//${window.location.hostname}:3002/api/favorites`;
+const SCHEDULE_API = `//${window.location.hostname}:${window.location.port}/api/schedule`;
+const SCHEDULE_FAVORITES_API = `//${window.location.hostname}:${window.location.port}/api/favorites`;
 
 
 const initialState = {

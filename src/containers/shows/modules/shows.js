@@ -7,8 +7,8 @@ export const ADD_FAVORITE = 'ADD_FAVORITE'
 export const REMOVE_FAVORITE = 'REMOVE_FAVORITE'
 
 
-const SHOW_API = `//${window.location.hostname}:3002/api/shows`;
-const SHOW_FAVORITES_API = `//${window.location.hostname}:3002/api/favorites`;
+const SHOW_API = `//${window.location.hostname}:${window.location.port}/api/shows`;
+const SHOW_FAVORITES_API = `//${window.location.hostname}:${window.location.port}/api/favorites`;
 
 const initialState = {
   show: {image:{original:''},seasons:[],name:'', _embedded:{episodes:[]}},
