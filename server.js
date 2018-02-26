@@ -413,5 +413,5 @@ app.get('/api/schedule', (req, res) => {
 const server = app.listen(PORT,'localhost',()=>{
   const host = server.address().address;
   const port = server.address().port;
-  console.log(host);
+  console.log(host,port);
 });
