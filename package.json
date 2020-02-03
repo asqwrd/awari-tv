@@ -23,7 +23,7 @@
     "node-vibrant": "^3.0.0",
     "npm-run-all": "^4.1.2",
     "react": "^16.2.0",
-    "react-dom": "^16.2.0",
+    "react-dom": "^16.2.1",
     "react-lifecycle-component": "^3.0.0",
     "react-material-ui-form-validator": "^1.0.4",
     "react-redux": "^5.0.6",
