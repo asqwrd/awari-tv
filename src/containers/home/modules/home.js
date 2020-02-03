@@ -103,8 +103,8 @@ export const getSchedule = (filter='',date=moment().format('YYYY-MM-DD')) => {
           .then(response => response.json())
           .then(res =>{
             const schedule = res;
-            const color =  res.color.Muted._rgb;
-            const muted_color = res.color.DarkMuted ?  res.color.DarkMuted._rgb : res.color.LightMuted._rgb;
+            const color =  res.color.Muted ? res.color.Muted._rgb : res.color.Vibrant._rgb;
+            const muted_color = res.color.DarkMuted ?  res.color.DarkMuted._rgb : res.color.LightMuted ? res.color.LightMuted._rgb : res.color.LightVibrant._rgb;
             const time_of_day = res.time_of_day;
             return dispatch({
               type: GET_SCHEDULE,
